@@ -76,6 +76,7 @@ h2{font-family:var(--pix);font-weight:400;font-size:15px;line-height:1.6}h3{font
 .sw{display:inline-block;width:12px;height:16px;border-radius:2px 2px 6px 6px;flex:none;border:1px solid #0006}
 .sw.scr{background:#e8dcb0;border-radius:2px;height:14px}.sw.eq{background:#8a93a8;border-radius:1px;width:8px}
 .sw.big{width:16px;height:22px}
+.ji{width:32px;height:32px;flex:none;image-rendering:pixelated;image-rendering:crisp-edges}.ji.dim{opacity:.45}
 .empty{color:var(--dim);padding:8px 2px}
 #hint{color:var(--accent);font-size:12px;margin-top:6px}
 .ctrl{display:flex;flex-wrap:wrap;gap:6px}
@@ -122,6 +123,45 @@ body.phone.packopen #packlist{max-height:none}
 body.phone .pclose{display:inline-block}
 body.phone .acts button{padding:6px 10px;font-size:12px}
 body.phone .tabs{flex-wrap:wrap}
+
+/* ---- multiplayer ---- */
+input,select{font:inherit;color:var(--fg);background:#0e1119;border:1px solid var(--line);border-radius:3px;padding:6px 8px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.field{display:flex;flex-direction:column;gap:4px;margin:0 0 10px}
+.field label,.codebox .dim{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.seg{display:flex;gap:0}.seg button{border-radius:0;margin-left:-1px;flex:1}.seg button:first-child{border-radius:3px 0 0 3px;margin-left:0}.seg button:last-child{border-radius:0 3px 3px 0}
+.seg button.on{background:#232838;border-color:var(--accent);color:var(--accent);position:relative}
+.lcols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.lcols .card{display:flex;flex-direction:column;gap:8px}.lcols h3{margin:0}
+#lcode{text-transform:uppercase;letter-spacing:.3em;font-size:18px;text-align:center}
+.err{color:var(--bad);margin:8px 0 0}
+.codebox{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.codebox b{font-family:var(--pix);font-size:26px;letter-spacing:.18em;color:var(--accent)}
+.lplayer{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #1b2030}
+.lplayer .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lplayer .tag{font-size:11px;padding:1px 6px;border:1px solid var(--line);border-radius:10px;color:var(--dim)}
+.lplayer .tag.ok{color:var(--good);border-color:#2f6a48}
+.chatbox{margin-top:10px}
+.chatlog{height:84px;overflow-y:auto;font-size:12px;background:#0e1119;border:1px solid var(--line);border-radius:3px;padding:4px 6px;margin-bottom:6px}
+.chatlog .sys{color:var(--dim);font-style:italic}.chatlog b{color:var(--accent)}
+.chatrow{display:flex;gap:6px}.chatrow input{flex:1}
+.quick{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.quick button{padding:3px 8px;font-size:11px}
+.partycard .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.pm{display:flex;align-items:center;gap:8px;padding:3px 0}
+.pm .ji{width:24px;height:24px}
+.pm .who{flex:1;min-width:0}.pm .who b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.pm .pbar{height:5px;background:#0e1119;border-radius:2px;overflow:hidden;margin-top:2px}.pm .pbar i{display:block;height:100%}
+.pm .st{font-size:11px;color:var(--dim);white-space:nowrap}.pm.me .who b{color:var(--accent)}
+.pm.down .st{color:var(--bad)}.pm.gone{opacity:.45}
+.banner{margin:6px 0;padding:6px 8px;border:1px solid #6a2f38;background:#2a1318;border-radius:3px;color:#ffb0a8;font-size:12px}
+#toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);max-width:min(92vw,520px);background:#1b2030;border:1px solid var(--accent);border-radius:4px;padding:8px 14px;z-index:20;text-align:center}
+.rank{width:100%;border-collapse:collapse;margin:10px 0}.rank td,.rank th{padding:5px 8px;border-bottom:1px solid #1b2030;text-align:left;font-weight:400}.rank th{color:var(--dim);font-size:11px;text-transform:uppercase}
+.rank tr.me td{color:var(--accent)}.rank tr.win td:first-child{color:#ffd36b}
+body.phone .partycard{order:5}
+body.phone #lobby .sheet{padding:14px}
+body.phone .lcols{grid-template-columns:1fr}
+body.phone input,body.phone select{font-size:16px}
+@media (max-width:560px){.lcols{grid-template-columns:1fr}input,select{font-size:16px}}
 </style>
 </head>
 <body>
@@ -131,7 +171,7 @@ body.phone .tabs{flex-wrap:wrap}
  <div class="row2"><button class="primary" id="cont" hidden>Continue</button><button id="jopen2">Journal</button><span class="dim" id="stat"></span></div>
  <div><div class="top"><h3 style="margin:0">Choose a kit</h3><span class="dim">Echoes: <b id="echoes" style="color:var(--accent)">0</b></span></div></div>
  <div id="kits"></div>
- <div class="row2"><button class="primary" id="begin">Descend</button><button id="phonebtn">Phone layout</button><button id="reset" class="dim">Forget everything</button></div>
+ <div class="row2"><button class="primary" id="begin">Descend</button><button id="mpbtn">Multiplayer</button><button id="phonebtn">Phone layout</button><button id="reset" class="dim">Forget everything</button></div>
  <p class="keys">Move: arrows, WASD, or tap a tile. Wait: space. Explore: x. Go to stairs: g. Descend: &gt;. Altar or fountain: e. Journal: i. Dying converts depth and kills into echoes, which unlock new kits.</p>
 </div></section>
 
@@ -146,6 +186,14 @@ body.phone .tabs{flex-wrap:wrap}
    <div class="kv eqrow"><span>Weapon</span><span id="wpn"></span></div>
    <div class="kv eqrow"><span>Armor</span><span id="arm"></span></div>
    <div class="chips" id="status"></div><div class="chips" id="laws"></div>
+  </div>
+  <div class="card partycard" id="partycard" hidden>
+   <div class="top"><b id="partytitle">Party</b><span class="dim" id="partysub"></span></div>
+   <div id="partybanner" class="banner" hidden></div>
+   <div id="partylist"></div>
+   <div class="chatbox"><div class="chatlog" id="chatlog"></div>
+    <div class="chatrow"><input id="chatin" maxlength="140" placeholder="Message your party" autocomplete="off" enterkeyhint="send"><button id="chatsend">Send</button></div>
+    <div class="quick" id="quick"><button data-q="Help!">Help!</button><button data-q="Wait for me">Wait</button><button data-q="Go on, I'm right behind you">Go on</button><button data-q="Danger ahead">Danger</button><button data-q="Good one!">Nice</button><button id="pingbtn">Ping a tile</button></div></div>
   </div>
   <div class="card" id="inspect"></div>
   <div class="card packcard">
@@ -162,6 +210,38 @@ body.phone .tabs{flex-wrap:wrap}
 <section id="draft" class="overlay" hidden><div class="sheet"><h2 id="drafttitle"></h2><div class="dim">Gifts stack. The same one chosen again grows stronger.</div><div id="draftopts"></div></div></section>
 <section id="dead" class="overlay" hidden><div class="sheet"><h2>You are lost to the well</h2><p id="deadmsg" style="font-family:var(--serif);font-size:20px"></p><p class="dim" id="deadstat"></p><button class="primary" id="again">Return to the surface</button></div></section>
 <section id="journal" class="overlay" hidden><div class="sheet"><div class="jhead"><h2>Journal</h2><button id="jclose">Close</button></div><div id="jbody"></div></div></section>
+
+<section id="lobby" class="overlay" hidden><div class="sheet">
+ <div class="jhead"><h2>Multiplayer</h2><button id="lclose">Back</button></div>
+ <div id="lstep1">
+  <p class="dim">Play with friends. One person hosts a room and shares its 5-letter code. In multiplayer every role is open, and nothing you find is kept except the echoes you earn.</p>
+  <div class="field"><label for="lname">Your name</label><input id="lname" maxlength="12" autocomplete="off"></div>
+  <div class="field"><label for="lkit">Role</label><select id="lkit"></select></div>
+  <div class="field"><label>Connection</label><div class="seg" id="lkind"><button data-v="peer" class="on">Online (room code)</button><button data-v="local">This device (other tab)</button></div></div>
+  <div class="lcols">
+   <div class="card"><h3>Host a room</h3>
+    <div class="seg" id="lmode"><button data-v="coop" class="on">Co-op</button><button data-v="race">Race</button></div>
+    <p id="lmodedesc" class="dim" style="margin:0"></p>
+    <div class="field" id="lgoalf" hidden><label for="lgoal">Race to depth</label><input id="lgoal" type="number" min="3" max="40" value="10"></div>
+    <button class="primary" id="lhost">Create room</button></div>
+   <div class="card"><h3>Join a room</h3>
+    <input id="lcode" maxlength="5" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    <button class="primary" id="ljoin">Join</button></div>
+  </div>
+  <p id="lerr" class="err" hidden></p>
+  <p id="lnote" class="dim" style="font-size:11px"></p>
+ </div>
+ <div id="lstep2" hidden>
+  <div class="codebox"><span class="dim">Room code</span><b id="lroomcode"></b><button id="lcopy">Copy invite link</button></div>
+  <p class="dim" id="lroominfo" style="margin:4px 0 8px"></p>
+  <div id="lplayers"></div>
+  <div class="row2" style="margin-top:12px"><select id="lkit2"></select><button id="lready">Ready</button><button class="primary" id="lstart" hidden>Start</button><button id="lleave" class="dim">Leave room</button></div>
+  <p id="lwait" class="dim" style="margin:8px 0 0"></p>
+  <div class="chatbox"><div class="chatlog" id="lchat"></div><div class="chatrow"><input id="lchatin" maxlength="140" placeholder="Say hello" autocomplete="off" enterkeyhint="send"><button id="lchatsend">Send</button></div></div>
+ </div>
+</div></section>
+<section id="mpend" class="overlay" hidden><div class="sheet"><h2 id="mpendt">Race over</h2><p id="mpendr" class="dim"></p><table class="rank" id="mpendtab"></table><button class="primary" id="mpendbtn">Back to menu</button></div></section>
+<div id="toast" hidden></div>
 
 <script>
 // ===== data.js =====
@@ -361,6 +441,19 @@ KITS.push(
 {id:'warden2',n:'Warden-sworn',cost:-1,deed:'wardens',d:'Plate armor, mace, Thorns II. Slow to start.',wpn:['mace',0],arm:[3,0],perks:{thorn:2},mhp:5},
 {id:'beast',n:'Beast Caller',cost:-1,deed:'allies',d:'Beastkeeper I and a scroll of Legion.',wpn:['spear',0],arm:[1,0],perks:{keeper:1},legion:1}
 );
+
+// ---------- more creatures ----------
+Object.assign(MON,{
+bat:{g:'v',n:'Cave bat',hp:6,d:[1,3],spd:140,col:'#8a7aa8',min:2,w:6,drain:1,def:0,note:'Very fast. Drinks blood.'},
+viper:{g:'S',n:'Pit viper',hp:9,d:[2,3],spd:110,col:'#7fbf4a',min:3,w:6,hitpoison:1,imm:['poison'],def:0,note:'Its bite poisons. Immune to poison.'},
+hound:{g:'c',n:'Cinder hound',hp:14,d:[3,5],spd:120,col:'#ff6a3a',min:5,w:5,pack:[2,3],imm:['fire'],hitburn:1,def:0,note:'Hunts in pairs. Its bite sets you alight.'},
+brute:{g:'B',n:'Stone brute',hp:30,d:[4,7],spd:80,col:'#9a8a78',min:5,w:5,weak:{sonic:1.5},def:2,note:'Slow, heavy, armored. Sound cracks its hide.'},
+rimesprite:{g:'f',n:'Rime sprite',hp:10,d:[2,4],spd:110,col:'#cfeaff',min:6,w:5,ai:'range',rng:5,imm:['ice'],def:0,note:'Flings shards of ice from afar.'},
+ghoul:{g:'g',n:'Grave ghoul',hp:24,d:[3,6],spd:100,col:'#9fb08a',min:7,w:5,regen:2,imm:['poison'],def:0,note:'Regenerates unless burning or poisoned.'},
+sentinel:{g:'Y',n:'Glass sentinel',hp:18,d:[2,5],spd:100,col:'#bfe8ee',min:8,w:4,ai:'range',rng:7,def:2,weak:{sonic:2},note:'A patient sniper. Shatters to sound.'}
+});
+for(const [i,k] of [[0,['bat','viper']],[2,['hound']],[3,['rimesprite']],[4,['ghoul']],[5,['sentinel','ghoul']],[1,['viper']]])BIOMES[i].bias.push(...k);
+
 // ---------- deeds ----------
 const DEEDS=[
 {id:'d5',n:'Five Fathoms',h:'Reach depth 5.',f:s=>G.depth>=5,r:20},
@@ -394,14 +487,37 @@ const DEEDS=[
 {id:'biomes',n:'Cartographer of Depths',h:'Visit all six biomes in one save.',f:s=>Object.keys(SAVE.biomeSeen||{}).length>=6,r:200},
 {id:'fullpack',n:'Hoarder',h:'Carry 20 items at once.',f:s=>G.inv.length>=20,r:30}
 ];
+DEEDS.push(
+{id:'k50',n:'Hunter',h:'Kill 50 creatures in one run.',f:s=>G.kills>=50,r:60},
+{id:'k150',n:'Reaper',h:'Kill 150 creatures in one run.',f:s=>G.kills>=150,r:150},
+{id:'d25',n:'Twenty-five Fathoms',h:'Reach depth 25.',f:s=>G.depth>=25,r:500},
+{id:'dash',n:'Dash',h:'Reach depth 8 in under 1500 turns.',f:s=>G.depth>=8&&G.tick<1500,r:150},
+{id:'patient',n:'Patient Delver',h:'Reach depth 8 after more than 3000 turns.',f:s=>G.depth>=8&&G.tick>3000,r:60},
+{id:'notes10',n:"Alchemist's Notebook",h:'Learn 10 recipes in total.',f:s=>Object.keys(SAVE.recipes).length>=10,r:80},
+{id:'runs10',n:'Veteran',h:'Begin 10 runs.',f:s=>SAVE.runs>=10,r:50},
+{id:'runs50',n:'Lifer',h:'Begin 50 runs.',f:s=>SAVE.runs>=50,r:200},
+{id:'allpot',n:'Master Taster',h:'Identify every kind of potion.',f:s=>Object.keys(SAVE.known).length>=POT.length,r:300},
+{id:'allscr',n:'Polyglot',h:'Identify every kind of scroll.',f:s=>Object.keys(SAVE.scrKnown).length>=SCR.length,r:300},
+{id:'bestiary',n:'Naturalist of Teeth',h:'Meet 15 kinds of creature in total.',f:s=>Object.keys(SAVE.seen||{}).length>=15,r:100},
+{id:'tough',n:'Ironhide',h:'Reach depth 6 with 60 or more health.',f:s=>G.depth>=6&&G.p.mhp>=60,r:70}
+);
+KITS.push(
+{id:'duelist',n:'Duelist',cost:150,d:'Dagger. Duelist II and Light Feet.',wpn:['dagger',0],arm:[1,0],perks:{duel:2,step:1},mhp:-4},
+{id:'mender',n:'Mender',cost:160,d:'Mace. Lifedrinker and Second Wind.',wpn:['mace',0],arm:[1,0],perks:{drink:1,wind:1},mhp:5},
+{id:'stormer',n:'Stormcaller',cost:140,d:'Sword. Hits arc to a neighbor.',wpn:['sword',0],arm:[0,0],perks:{storm:1}},
+{id:'reaper',n:'Reaper',cost:-1,deed:'k150',d:'Axe, Executioner and Lifedrinker. Frail.',wpn:['axe',0],arm:[0,0],perks:{exec:1,drink:1},mhp:-6}
+);
 
 // ===== world.js =====
 // ---------- save + world ----------
 const SKEY='deepwell.v1';
 let SAVE=null,WORLD=null,G=null,L=null;
+// multiplayer state (see mp.js). co = co-op host running the shared world. MPG = this client is a co-op guest.
+const MP={on:false,host:false,guest:false,co:false,mode:'coop',me:0,cur:0,actor:0,players:[],noPersist:false,realSave:null};
+let MPG=false;
 function defaultSave(){return{ws:(Math.random()*2147483647)|0,known:{},scrKnown:{},recipes:{},echoes:0,best:0,runs:0,kills:0,unlocked:{wanderer:1},seen:{},run:null}}
 function loadSave(){try{const s=localStorage.getItem(SKEY);if(s)SAVE=Object.assign(defaultSave(),JSON.parse(s))}catch(e){}if(!SAVE)SAVE=defaultSave();buildWorld()}
-function persist(){try{localStorage.setItem(SKEY,JSON.stringify(SAVE))}catch(e){}}
+function persist(){if(MP.noPersist)return;try{localStorage.setItem(SKEY,JSON.stringify(SAVE))}catch(e){}}
 function buildWorld(){
  const r=mulberry(SAVE.ws),idx=[...Array(COLORS.length).keys()];
  for(let i=idx.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=idx[i];idx[i]=idx[j];idx[j]=t}
@@ -446,7 +562,7 @@ const tileAt=(x,y)=>inb(x,y)?L.t[y*W+x]:null;
 function open(x,y){const t=tileAt(x,y);return!!t&&!t.w}
 function diagOK(x,y,dx,dy){return dx===0||dy===0||(open(x+dx,y)&&open(x,y+dy))}
 function monAt(x,y){for(const m of L.mons)if(!m.dead&&m.x===x&&m.y===y)return m;return null}
-function occAt(x,y){const P=G.p;if(P.x===x&&P.y===y)return P;return monAt(x,y)}
+function occAt(x,y){const P=G.p;if(P.x===x&&P.y===y)return P;if(MP.co){const q=mpPlayerAt(x,y);if(q)return q}return monAt(x,y)}
 function bfs(sx,sy){
  const d=new Int16Array(W*H).fill(-1),q=[sx+sy*W];d[q[0]]=0;
  for(let h=0;h<q.length;h++){const c=q[h],cx=c%W,cy=(c/W)|0;
@@ -461,8 +577,11 @@ function los(x0,y0,x1,y1){
 }
 function sightR(){return Math.max(2,(L.laws.includes('dark')?4:L.dark?5:9)+ringP(6))}
 function computeFov(){
- const P=G.p,R=sightR();
  for(const t of L.t)t.vis=0;
+ if(MP.co){for(const pl of MP.players)if(pl.p&&!pl.p.down&&!pl.gone)mpAs(pl.i,fovMark)}else fovMark();
+}
+function fovMark(){
+ const P=G.p,R=sightR();
  for(let y=P.y-R;y<=P.y+R;y++)for(let x=P.x-R;x<=P.x+R;x++){
   if(!inb(x,y))continue;const dx=x-P.x,dy=y-P.y;if(dx*dx+dy*dy>R*R+R)continue;
   if(los(P.x,P.y,x,y)){const t=tileAt(x,y);t.vis=1;t.seen=1}}
@@ -582,11 +701,13 @@ function spawnMon(k,x,y,awake){
 // ---------- rules: combat, environment, monsters ----------
 const FX=[];
 const now=()=>Date.now();
-function fxText(x,y,txt,col){FX.push({k:'t',x,y,txt,col,t:now()});if(FX.length>80)FX.shift()}
-function fxFlash(x,y,col){FX.push({k:'f',x,y,col,t:now()});if(FX.length>80)FX.shift()}
-function fxLine(x0,y0,x1,y1,col){FX.push({k:'l',x:x0,y:y0,x1,y1,col,t:now()});if(FX.length>80)FX.shift()}
+let fxDelay=0,FXN=0;
+function fxPush(o){o.n=++FXN;FX.push(o);if(FX.length>240)FX.shift()}
+function fxText(x,y,txt,col){fxPush({k:'t',x,y,txt,col,t:now()+fxDelay})}
+function fxFlash(x,y,col){fxPush({k:'f',x,y,col,t:now()+fxDelay})}
+function fxLine(x0,y0,x1,y1,col){fxPush({k:'l',x:x0,y:y0,x1,y1,col,t:now()+fxDelay})}
 let onMsg=null;
-function msg(text,cls){G.log.push({text,cls:cls||'',tick:G.tick});if(G.log.length>120)G.log.shift();if(onMsg)onMsg(text,cls)}
+function msg(text,cls){G.log.push({text,cls:cls||'',tick:G.tick,n:G.logN=(G.logN||0)+1,pid:MP.on&&MP.mode==='coop'?MP.cur:undefined});if(G.log.length>120)G.log.shift();if(onMsg)onMsg(text,cls)}
 function pkN(id){return G&&G.perks?(G.perks[id]||0):0}
 const NOTICK={reborn:1,echo:1,charge:1,shield:1};
 function mname(m){return(m.name||MON[m.k].n)+(m.aff&&m.aff.length?' ('+m.aff.map(a=>AFX[a]).join(', ')+')':'')}
@@ -604,9 +725,10 @@ function addSt(t,k,v){
 }
 function hurt(t,amt,type,src){
  if(!(amt>0))return 0;
- const P=G.p;
+ if(MP.co&&t.pidx!==undefined&&t!==G.p)return mpAs(t.pidx,()=>hurt(t,amt,type,src));
+ const P=G.p;animHurt(t);
  if(t===P){
-  if(G.dead)return 0;
+  if(G.dead||P.down)return 0;
   if(type==='fire'&&(pkN('ember')||P.st.fireproof>0))return 0;
   if(type==='fire')amt*=Math.max(0.1,1-0.2*ringP(5));
   if(type==='phys')amt=amt*12/(12+armorVal()*2.2);
@@ -708,17 +830,25 @@ function envTick(){
  }
  for(const[x,y]of add)ignite(x,y,4);
 }
-function tickWorld(){
- const P=G.p;G.tick++;
- envTick();
+function playerTick(acting){
+ const P=G.p;
  tickActor(P,true);
- if(G.dead)return;
- ringTick();if(G.dead)return;
+ if(G.dead||P.down)return;
+ ringTick();if(G.dead||P.down)return;
  P.sat-=Math.pow(0.75,pkN('camel'))*Math.max(0.2,1-0.12*ringP(8));
  if(P.sat<=0){P.sat=0;if(G.tick%3===0)hurt(P,2+Math.floor(G.depth/6),'hunger','starvation')}
- if(G.dead)return;
+ if(G.dead||P.down)return;
  if(G.tick%10===0&&P.sat>0&&P.hp<P.mhp)P.hp=Math.min(P.mhp,P.hp+1+Math.floor(P.mhp/70));
  P.energy+=pspd();
+ if(!acting&&P.energy>100)P.energy=100;
+}
+function tickWorld(){
+ G.tick++;
+ envTick();
+ if(MP.co){
+  const act=MP.cur;
+  for(const pl of MP.players){if(!pl.p||pl.p.down||pl.gone)continue;mpAs(pl.i,()=>playerTick(pl.i===act));if(G.dead)return}
+ }else{playerTick(true);if(G.dead)return}
  for(const m of L.mons){
   if(m.dead)continue;
   tickActor(m,false);if(m.dead)continue;extMonTick(m);
@@ -726,7 +856,7 @@ function tickWorld(){
   const sp=m.spd*(m.st.haste>0?2:1)*(m.st.stone>0?0.3:1)*(m.st.slowed>0?0.5:1)*(m.boss&&m.hp<m.mhp/2?1.3:1);
   m.energy+=sp;
   let guard=0;
-  while(m.energy>=100&&!m.dead&&!G.dead&&guard++<3){m.energy-=100;monTurn(m)}
+  while(m.energy>=100&&!m.dead&&!G.dead&&guard++<3){m.energy-=100;mpMonTurn(m)}
   if(G.dead)break;
  }
  L.mons=L.mons.filter(m=>!m.dead);
@@ -743,7 +873,7 @@ function spawnWanderer(){
   spawnMon(wpick(pool,k=>MON[k].w),x,y,true);return}
 }
 // ---------- monster AI ----------
-function dmap(){if(G.dmv!==G.mv){G.dm=bfs(G.p.x,G.p.y);G.dmv=G.mv}return G.dm}
+function dmap(){const P=G.p;if(P._dv!==G.mv){P._dm=bfs(P.x,P.y);P._dv=G.mv}return P._dm}
 function cheb(a,b){return Math.max(Math.abs(a.x-b.x),Math.abs(a.y-b.y))}
 function mstep(m,dirs){
  for(const[dx,dy]of dirs){const nx=m.x+dx,ny=m.y+dy;
@@ -772,12 +902,13 @@ function stepToward(m,away){
  return mstep(m,dirs);
 }
 function monAttack(m,mult){
- const d=MON[m.k],P=G.p;
+ const d=MON[m.k],P=G.p;fxMeleeM(m);
  let dmg=ri(d.d[0],d.d[1])*ds()*(mult||1);
  if(m.st.might>0)dmg*=1.5;
  const a=hurt(P,dmg,'phys',mname(m));
  if(a>0){
   if(d.hitburn)addSt(P,'burn',3);
+  if(d.hitpoison&&chance(0.5)){addSt(P,'poison',4);msg('The bite is venomous!','bad')}
   if(d.hitfreeze&&chance(0.4)){addSt(P,'frozen',2);msg('The bite freezes you!','bad')}
   if(m.aff.includes('chilling')&&chance(0.3)){addSt(P,'frozen',2);msg('Cold seizes you!','bad')}
   if(d.drain||m.aff.includes('vampiric'))m.hp=Math.min(m.mhp,m.hp+Math.ceil(a/2));
@@ -808,7 +939,7 @@ function monTurn(m){
   stepToward(m);return;
  }
  if(d.ai==='range'){
-  if(sees&&dist<=d.rng&&dist>=2){const a=hurt(P,ri(d.d[0],d.d[1])*ds(),'phys',mname(m));fxLine(m.x,m.y,P.x,P.y,'#ddd6bc');return}
+  if(sees&&dist<=d.rng&&dist>=2){const a=hurt(P,ri(d.d[0],d.d[1])*ds(),'phys',mname(m));fxLine(m.x,m.y,P.x,P.y,'#ddd6bc');fxShoot(m,P.x,P.y,'#ddd6bc');return}
   if(sees&&dist<=2&&stepToward(m,true))return;
   if(adj){monAttack(m);return}
   stepToward(m);return;
@@ -819,7 +950,7 @@ function monTurn(m){
    if(ally&&chance(0.7)){ally.hp=Math.min(ally.mhp,ally.hp+Math.round(5*hs()));fxFlash(ally.x,ally.y,'#b394e8');fxText(ally.x,ally.y,'+','#b394e8');return}
    const a2=L.mons.find(a=>!a.dead&&a!==m&&!a.st.shield&&cheb(a,m)<=6&&los(m.x,m.y,a.x,a.y)&&a.awake);
    if(a2&&chance(0.5)){a2.st.shield=Math.round(6*hs());fxFlash(a2.x,a2.y,'#8070ff');return}
-   if(sees&&dist<=5&&dist>=2){hurt(P,ri(d.d[0],d.d[1])*ds(),'phys',mname(m));fxLine(m.x,m.y,P.x,P.y,'#b394e8');return}
+   if(sees&&dist<=5&&dist>=2){hurt(P,ri(d.d[0],d.d[1])*ds(),'phys',mname(m));fxLine(m.x,m.y,P.x,P.y,'#b394e8');fxShoot(m,P.x,P.y,'#b394e8');return}
    if(dist<=2&&stepToward(m,true))return;
   }
   if(adj){monAttack(m);return}
@@ -835,30 +966,37 @@ function recalc(){
  let m=30+(kit.mhp||0)+10*pkN('vigor');if(pkN('glass'))m=Math.round(m*0.7);
  if(m>P.mhp)P.hp+=m-P.mhp;P.mhp=m;P.hp=Math.min(P.hp,P.mhp);
 }
-function newRun(kitId){
- const kit=KITS.find(k=>k.id===kitId)||KITS[0];
- G={seed:(Math.random()*2147483647)|0,kit:kit.id,depth:0,tick:0,kills:0,mv:0,dmv:-1,log:[],inv:[],perks:Object.assign({},kit.perks||{}),pending:null,dead:false,windUsed:false,sense:0,
-  p:{x:0,y:0,hp:30,mhp:30,sat:1500,energy:100,st:{},wpn:{w:kit.wpn[0],e:kit.wpn[1]},arm:{lv:kit.arm[0],e:kit.arm[1]}}};
- recalc();G.p.hp=G.p.mhp;
+function newRun(kitId,seed){
+ G={seed:seed||(Math.random()*2147483647)|0,depth:0,tick:0,mv:0,dmv:-1,log:[],dead:false};
  rng=mulberry(G.seed);
+ initPlayerCtx(kitId);
+ SAVE.runs++;persist();
+ descend();
+}
+// everything that belongs to one player: also what multiplayer swaps in and out of G
+function initPlayerCtx(kitId){
+ const kit=KITS.find(k=>k.id===kitId)||KITS[0];
+ G.kit=kit.id;G.kills=0;G.stats=null;G.sense=0;G.windUsed=false;G.pending=null;G.inv=[];G.perks=Object.assign({},kit.perks||{});
+ G.p={x:0,y:0,hp:30,mhp:30,sat:1500,energy:100,st:{},wpn:{w:kit.wpn[0],e:kit.wpn[1]},arm:{lv:kit.arm[0],e:kit.arm[1]}};
+ recalc();G.p.hp=G.p.mhp;
  addItem({t:'food'});
  if(kit.pots===2){const k=wpick(POT.map((p,i)=>i).filter(i=>!POT[i].rare),i=>POT[i].w);addItem({t:'pot',k,p:1,n:2})}
  if(kit.pots===4)for(let i=0;i<4;i++)addItem({t:'pot',k:wpick(POT.map((p,i)=>i).filter(i=>!POT[i].rare),i=>POT[i].w),p:1});
  if(kit.wand){const k=ri(0,WAND.length-1),c=ri(3,5)+pkN('wright');addItem({t:'wand',k,c,mc:c})}
  if(kit.legion)addItem({t:'scr',k:12});
  if(kit.scrs)for(let i=0;i<kit.scrs;i++)addItem({t:'scr',k:wpick(SCR.map((s,i)=>i),i=>SCR[i].w)});
- SAVE.runs++;persist();
- descend();
 }
 function placeLevel(){genLevel(G.depth);G.mv++;computeFov()}
 function descend(){
  G.depth++;placeLevel();
- if(G.depth>SAVE.best)SAVE.best=G.depth;
+ if(G.depth>SAVE.best&&!MP.noPersist)SAVE.best=G.depth;
  G.windUsed=false;
  msg('Depth '+G.depth+'.','depth');
  if(L.laws.length)msg('Floor law: '+L.laws.map(l=>LAWS[l].n).join(', ')+'.','law');
+ if(MP.co){mpArriveParty();return}
  if(G.depth>1)G.pending={type:'draft',opts:rollDraft()};
  else arrive();
+ if(MP.on&&MP.mode==='race')mpRaceProgress();
 }
 function arrive(){extArrive();
  const c=pkN('cart');
@@ -867,6 +1005,7 @@ function arrive(){extArrive();
  saveRun();
 }
 function saveRun(){
+ if(MP.on)return;
  const P=G.p;
  SAVE.run={seed:G.seed,kit:G.kit,depth:G.depth,tick:G.tick,kills:G.kills,stats:G.stats,perks:G.perks,inv:G.inv,p:{hp:P.hp,mhp:P.mhp,sat:P.sat,wpn:P.wpn,arm:P.arm,st:{reborn:P.st.reborn||0,echo:P.st.echo||0}}};
  persist();
@@ -885,7 +1024,7 @@ function rollDraft(){
  while(out.length<3&&pool.length){out.push(pool.splice(Math.floor(rnd()*pool.length),1)[0].id)}
  return out;
 }
-function choosePerk(id){
+function choosePerk(id){if(MPG)return mpCmd('choosePerk',[id]);
  if(!G.pending||G.pending.type!=='draft')return;
  G.perks[id]=pkN(id)+1;recalc();
  if(id==='vigor')G.p.hp=Math.min(G.p.mhp,G.p.hp+10);
@@ -898,6 +1037,8 @@ function playerDie(cause){
  if(P.st.reborn>0){P.st.reborn=0;inc('reborn');P.hp=Math.ceil(P.mhp/2);P.st.burn=0;P.st.poison=0;P.st.frozen=0;msg('Phoenix fire pulls you back from the edge.','good');
   for(const[dx,dy]of DIRS){explode(P.x,P.y,2,Math.round(8*ds()),'fire',P);break}
   return}
+
+ if(MP.co){mpDown(cause);return}
  P.hp=0;G.dead=true;G.cause=cause;
  const ech=Math.floor(G.depth*G.depth*1.5+G.kills*0.5);
  G.echoes=ech;SAVE.echoes+=ech;SAVE.kills+=G.kills;SAVE.run=null;persist();
@@ -905,13 +1046,14 @@ function playerDie(cause){
 }
 // ---------- player actions ----------
 function playerAct(cost){
- const P=G.p;if(G.dead||G.pending)return;
+ const P=G.p;if(G.dead||G.pending||P.down)return;
  P.energy-=cost;
  let guard=0;
- while((P.energy<100||P.st.frozen>0)&&!G.dead&&guard++<400){tickWorld();if(P.st.frozen>0&&P.energy>=100)P.energy=99}
+ while((P.energy<100||P.st.frozen>0)&&!G.dead&&!P.down&&guard++<400){tickWorld();if(P.st.frozen>0&&P.energy>=100)P.energy=99}
  L.mons=L.mons.filter(m=>!m.dead);
  if(!G.dead){computeFov();if(pkN('sage'))for(const mm of visMons())if(WORLD.aff[mm.k]){SAVE.affKnown=SAVE.affKnown||{};SAVE.affKnown[mm.k]={weak:1,res:1}}checkDeeds()}
  if(G.sense>0&&G.sense<G.tick)G.sense=0;
+ if(MP.on)mpAfterAct();
 }
 function visMons(){return L.mons.filter(m=>!m.dead&&!m.disg&&!m.ally&&tileAt(m.x,m.y).vis)}
 function weaponHit(m,dmg,P){
@@ -931,13 +1073,13 @@ function weaponHit(m,dmg,P){
 }
 function playerAttack(targets,cost){
  const P=G.p;
- for(const m of targets){if(m.disg){m.disg=false;msg(m.invis?'You strike something hidden!':'The loot was a Mimic!','bad');m.invis=false}weaponHit(m,wpnDmg(),P);P.st.hidden=0}
+ for(const m of targets){fxMeleeP(m);if(m.disg){m.disg=false;msg(m.invis?'You strike something hidden!':'The loot was a Mimic!','bad');m.invis=false}weaponHit(m,wpnDmg(),P);P.st.hidden=0}
  let c=cost||100;
  if(P.wpn.w==='dagger'&&chance(0.4))c=0;
  if(P.wpn.w==='mace')c=140;
  playerAct(c);
 }
-function tryMove(dx,dy){
+function tryMove(dx,dy){if(MPG)return mpCmd('tryMove',[dx,dy]);
  const P=G.p;if(G.dead||G.pending)return false;
  if(P.st.confused>0&&chance(0.45)){const rd=pick(DIRS);dx=rd[0];dy=rd[1]}
  const nx=P.x+dx,ny=P.y+dy;
@@ -955,6 +1097,8 @@ function tryMove(dx,dy){
   else playerAttack([m]);
   return true;
  }
+
+ if(MP.co&&diagOK(P.x,P.y,dx,dy)){const o=mpPlayerAt(nx,ny);if(o){o.x=P.x;o.y=P.y;P.x=nx;P.y=ny;G.mv++;pickup();msg('You trade places with '+o.name+'.');playerAct(100);return true}}
  if(!open(nx,ny)||!diagOK(P.x,P.y,dx,dy))return false;
  P.x=nx;P.y=ny;G.mv++;
  // slide on ice
@@ -978,29 +1122,29 @@ function pickup(){
 function learnPot(k){if(!SAVE.known[k]){SAVE.known[k]=1;msg('This is a Potion of '+POT[k].n+'. Noted in your journal.','learn');persist()}}
 function learnScr(k){if(!SAVE.scrKnown[k]){SAVE.scrKnown[k]=1;msg('This is a Scroll of '+SCR[k].n+'. Noted in your journal.','learn');persist()}}
 function consume(i){const it=G.inv[i];it.n=(it.n||1)-1;if(it.n<=0)G.inv.splice(i,1)}
-function waitTurn(){if(G.dead||G.pending)return;playerAct(100)}
-function useItem(i){
+function waitTurn(){if(MPG)return mpCmd('waitTurn',[]);if(G.dead||G.pending)return;playerAct(100)}
+function useItem(i){if(MPG)return mpCmd('useItem',[i]);
  const it=G.inv[i],P=G.p;if(!it||G.dead||G.pending)return;
- if(it.t==='food'){consume(i);P.sat=Math.min(1800,P.sat+900);msg('You eat. The hunger eases.','good');playerAct(100);return}
- if(it.t==='wpn'){const old=P.wpn;P.wpn={w:it.w,e:it.e};G.inv.splice(i,1);addItem({t:'wpn',w:old.w,e:old.e});msg('You wield '+iname(it)+'.');playerAct(100);return}
+ if(it.t==='food'){fxFood();consume(i);P.sat=Math.min(1800,P.sat+900);msg('You eat. The hunger eases.','good');playerAct(100);return}
+ if(it.t==='wpn'){fxEquip('wpn');const old=P.wpn;P.wpn={w:it.w,e:it.e};G.inv.splice(i,1);addItem({t:'wpn',w:old.w,e:old.e});msg('You wield '+iname(it)+'.');playerAct(100);return}
  if(it.t==='ring'){toggleRing(i);return}
  if(it.t==='wand'){msg('Pick a target tile on the map.');return}
- if(it.t==='arm'){const old=P.arm;P.arm={lv:it.lv,e:it.e};G.inv.splice(i,1);addItem({t:'arm',lv:old.lv,e:old.e});msg('You don '+iname(it)+'.');playerAct(100);return}
+ if(it.t==='arm'){fxEquip('arm');const old=P.arm;P.arm={lv:it.lv,e:it.e};G.inv.splice(i,1);addItem({t:'arm',lv:old.lv,e:old.e});msg('You don '+iname(it)+'.');playerAct(100);return}
  if(it.t==='pot'){
   const k=it.k,p=it.p;consume(i);
   const twice=P.st.echo>0&&k!==14;if(twice)P.st.echo=0;
-  learnPot(k);drink(k,p);if(twice&&!G.dead){msg('The echo repeats it.','good');drink(k,p)}
+  learnPot(k);fxDrink(k,p);drink(k,p);if(twice&&!G.dead){msg('The echo repeats it.','good');fxDrink(k,p);drink(k,p)}
   playerAct(100);return;
  }
  if(it.t==='scr'){
   const k=it.k;consume(i);
   const twice=P.st.echo>0;if(twice)P.st.echo=0;
-  learnScr(k);readScroll(k);if(twice&&!G.dead){msg('The echo repeats it.','good');readScroll(k)}
+  learnScr(k);{const ox=P.x,oy=P.y;readScroll(k);fxRead(k,ox,oy)}if(twice&&!G.dead){msg('The echo repeats it.','good');const ox=P.x,oy=P.y;readScroll(k);fxRead(k,ox,oy)}
   playerAct(100);return;
  }
 }
-function dropItem(i){const it=G.inv[i];if(!it)return;if(it.worn){msg('Take it off first.');return}consume(i);const c=JSON.parse(JSON.stringify(it));c.n=1;L.items.push({x:G.p.x,y:G.p.y,it:c});msg('You drop '+iname(c)+'.')}
-function throwItem(i,x,y){
+function dropItem(i){if(MPG)return mpCmd('dropItem',[i]);const it=G.inv[i];if(!it)return;if(it.worn){msg('Take it off first.');return}consume(i);const c=JSON.parse(JSON.stringify(it));c.n=1;L.items.push({x:G.p.x,y:G.p.y,it:c});msg('You drop '+iname(c)+'.')}
+function throwItem(i,x,y){if(MPG)return mpCmd('throwItem',[i,x,y]);
  const it=G.inv[i],P=G.p;if(!it||it.t!=='pot'||G.dead||G.pending)return false;
  // find landing tile along the line
  let lx=P.x,ly=P.y;
@@ -1008,12 +1152,12 @@ function throwItem(i,x,y){
  while(!(cx===x&&cy===y)&&n++<12){const e2=2*err;if(e2>-dy){err-=dy;cx+=sx}if(e2<dx){err+=dx;cy+=sy}
   if(!open(cx,cy))break;lx=cx;ly=cy;if(monAt(cx,cy))break}
  const k=it.k,p=it.p;consume(i);
- fxLine(P.x,P.y,lx,ly,potCol(k)[1]);
+ fxThrow(P.x,P.y,lx,ly,k);
  const twice=P.st.echo>0&&k!==14;if(twice)P.st.echo=0;
- learnPot(k);splash(k,p,lx,ly);if(twice&&!G.dead){msg('The echo repeats it.','good');splash(k,p,lx,ly)}
+ learnPot(k);fxDelay=FXFLIGHT;fxSplashFx(k,p,lx,ly);splash(k,p,lx,ly);if(twice&&!G.dead){msg('The echo repeats it.','good');splash(k,p,lx,ly)}fxDelay=0;
  P.st.hidden=0;playerAct(100);return true;
 }
-function mixPotions(i,j){
+function mixPotions(i,j){if(MPG)return mpCmd('mixPotions',[i,j]);
  const P=G.p;if(G.dead||G.pending)return false;
  const a=G.inv[i],b=G.inv[j];if(!a||!b||a.t!=='pot'||b.t!=='pot')return false;
  if(i===j&&(a.n||1)<2)return false;
@@ -1027,7 +1171,7 @@ function mixPotions(i,j){
  const key=Math.min(A.k,B.k)+':'+Math.max(A.k,B.k);
  SAVE.recipes[key]=r.k;persist();inc('mix');
  msg('The vials fizz into a '+iname(res)+(n>1?' (two!)':'')+'.','mix');
- fxFlash(P.x,P.y,potCol(r.k)[1]);
+ fxFlash(P.x,P.y,potCol(r.k)[1]);fxMix(A.k,B.k,r.k);
  playerAct(100);return true;
 }
 // ---------- effects ----------
@@ -1110,7 +1254,7 @@ function readScroll(k){
   default:extScroll(k);
  }
 }
-function descendHere(){
+function descendHere(){if(MPG)return mpCmd('descendHere',[]);
  const P=G.p;
  if(G.dead||G.pending)return false;
  if(P.x!==L.down.x||P.y!==L.down.y){msg('You need to stand on the stairs down.');return false}
@@ -1178,7 +1322,7 @@ function learnAff(k,kind){
 }
 // ---------- deeds ----------
 function checkDeeds(){
- if(!G)return;SAVE.deeds=SAVE.deeds||{};
+ if(!G||(MP.co&&MP.cur!==0))return;SAVE.deeds=SAVE.deeds||{};
  for(const d of DEEDS){
   if(SAVE.deeds[d.id])continue;let ok=false;try{ok=d.f(S())}catch(e){}
   if(!ok)continue;
@@ -1259,13 +1403,13 @@ function extMonAI(m,d,dist,adj,sees){
   return false;
  }
  if(d.ai==='gaze'){
-  if(sees&&dist<=7&&chance(0.4)){addSt(P,'confused',5);fxLine(m.x,m.y,P.x,P.y,'#f0e070');msg('The Gazer stares. The world tilts.','bad');return true}
+  if(sees&&dist<=7&&chance(0.4)){addSt(P,'confused',5);fxLine(m.x,m.y,P.x,P.y,'#f0e070');fxShoot(m,P.x,P.y,'#f0e070');msg('The Gazer stares. The world tilts.','bad');return true}
   if(dist>3&&!adj){stepToward(m);return true}
   return false;
  }
  if(d.ai==='warlock'){
   if(sees&&dist<=7){
-   if(chance(0.4)){hurt(P,ri(d.d[0],d.d[1])*ds(),'fire',mname(m));ignite(P.x,P.y,3);fxLine(m.x,m.y,P.x,P.y,'#e07ac8');return true}
+   if(chance(0.4)){hurt(P,ri(d.d[0],d.d[1])*ds(),'fire',mname(m));ignite(P.x,P.y,3);fxLine(m.x,m.y,P.x,P.y,'#e07ac8');fxShoot(m,P.x,P.y,'#e07ac8');return true}
    if(chance(0.2)&&L.mons.filter(o=>!o.dead&&o.k==='thrall'&&!o.ally).length<6){summonAround(m,'thrall',2);msg('The Warlock calls the dead.','bad');return true}
    if(dist<=2&&stepToward(m,true))return true;
   }
@@ -1281,12 +1425,12 @@ function wandBolt(tx,ty){
  for(const[x,y]of path){if(!open(x,y))break;out.push([x,y]);const o=monAt(x,y);if(o&&!o.ally&&!o.disg)break}
  return out;
 }
-function zapWand(i,tx,ty){
+function zapWand(i,tx,ty){if(MPG)return mpCmd('zapWand',[i,tx,ty]);
  const it=G.inv[i],P=G.p;if(!it||it.t!=='wand'||G.dead||G.pending)return false;
  if(it.c<=0){msg('The wand is empty. It only clicks.');return false}
  const path=wandBolt(tx,ty);if(!path.length){msg('Pick a direction with open space.');return false}
  const col=['#ff8a3d','#8fe0f0','#f5ec7a','#9a8fb0','#7fb0ff','#e07ac8','#b394e8','#c0a070','#80e0c0','#ff6a6a'][it.k];
- const end=path[path.length-1];fxLine(P.x,P.y,end[0],end[1],col);
+ const end=path[path.length-1];fxLine(P.x,P.y,end[0],end[1],col);fxBolt(P.x,P.y,end[0],end[1],col,it.k);
  it.c--;SAVE.wandKnown=SAVE.wandKnown||{};if(!SAVE.wandKnown[it.k]){SAVE.wandKnown[it.k]=1;msg('It is a Wand of '+WAND[it.k].n+'.','learn')}persist();
  let m=monAt(end[0],end[1]);if(m&&(m.ally||m.disg)&&it.k!==4)m=m.disg?m:null;
  if(m&&m.disg){m.disg=false;m.invis=false}
@@ -1316,6 +1460,7 @@ function toggleRing(i){
  if(wornCount()>=2+pkN('ringer')){msg('You have no free finger.');return}
  it.worn=1;it.wt=0;
  if(it.p<0){msg('The ring tightens. It will not come off.','bad');inc('cursed')}else msg('You put on the ring. You feel little at first.');
+ fxEquip('ring');
  playerAct(100);
 }
 function ringTick(){
@@ -1349,12 +1494,13 @@ function placeFeatures(floors,dist){
  }
 }
 function featHere(){if(!L.feat)return null;return L.feat.find(f=>f.x===G.p.x&&f.y===G.p.y)||null}
-function interact(){
+function interact(){if(MPG)return mpCmd('interact',[]);
+ if(MP.co&&mpRevive())return true;
  const f=featHere(),P=G.p;if(!f||G.dead||G.pending)return false;
  if(f.k==='altar'){msg('An altar of '+WORLD.gods[f.god].n+' '+WORLD.gods[f.god].sig+'. Use Offer on an item in your pack.');return false}
  if(f.used){msg('The fountain is dry.');return false}
  f.used=true;inc('fount');
- const o=WORLD.fo[f.kind];fxFlash(P.x,P.y,COLORS[WORLD.fc[f.kind]][1]);
+ const o=WORLD.fo[f.kind];fxFlash(P.x,P.y,COLORS[WORLD.fc[f.kind]][1]);fxFountainFx(P.x,P.y,COLORS[WORLD.fc[f.kind]][1]);
  SAVE.fountKnown=SAVE.fountKnown||{};
  switch(o){
   case 0:P.hp=P.mhp;P.st.poison=0;P.st.burn=0;msg('Clean, cold water. You are restored.','good');break;
@@ -1367,13 +1513,13 @@ function interact(){
  if(!SAVE.fountKnown[f.kind]){SAVE.fountKnown[f.kind]=o;persist()}
  playerAct(100);return true;
 }
-function offerItem(i){
+function offerItem(i){if(MPG)return mpCmd('offerItem',[i]);
  const f=featHere(),P=G.p;if(!f||f.k!=='altar'||G.dead||G.pending)return false;
  if(f.uses<=0){msg('The altar is cold.');return false}
  const it=G.inv[i];if(!it||it.worn)return false;
  const god=WORLD.gods[f.god];f.uses--;
  SAVE.godKnown=SAVE.godKnown||{};const gk=SAVE.godKnown[f.god]=SAVE.godKnown[f.god]||{};
- const nm=iname(it);consume(i);fxFlash(P.x,P.y,'#ffe8a0');
+ const nm=iname(it);consume(i);fxFlash(P.x,P.y,'#ffe8a0');fxOffer(P.x,P.y,it.t===god.love?1:it.t===god.hate?-1:0);
  if(it.t===god.love){
   gk.love=it.t;inc('altarOK');msg(god.n+' is pleased with '+nm+'.','good');
   const r=ri(0,2);
@@ -1440,6 +1586,791 @@ function extArrive(){
  checkDeeds();
 }
 
+// ===== effects.js =====
+// ---------- item-use effects (visual only; no DOM, so the rules tests can load this) ----------
+// Effects are pushed onto the shared FX list and drawn by graphics.js.
+//   'e' particle emitter   'i' floating item icon   'pr' thrown flask   's' screen tint
+// Particle positions are computed from time and a seed, so nothing is stored per particle.
+const FXFLIGHT = 260; // how long a thrown flask is in the air (ms)
+
+function fxEmit(o) {
+  const e = Object.assign({ k: 'e', pat: 'rise', cols: ['#fff'], n: 14, life: 650, R: 1.4, stag: 0.45, size: 1, d: 0 }, o);
+  e.t = now() + fxDelay + e.d;
+  e.seed = (Math.random() * 1e9) | 0;
+  e.dur = e.life * (1 + e.stag) + 80;
+  fxPush(e);
+}
+function fxScreen(col, a, dur, d) { fxPush({ k: 's', col, a, t: now() + fxDelay + (d || 0), dur: dur || 450 }); }
+function fxIcon(name, col, x, y, dur, d) { fxPush({ k: 'i', name, col, x, y, t: now() + fxDelay + (d || 0), dur: dur || 520 }); }
+
+// ----- potions: one entry per potion index. pat = rise | burst | converge | ring | rain | swirl | pillar | streak -----
+const PFX = [
+  { pat: 'rise', cols: ['#7fe0a0', '#c8ffd8'], ch: '+', n: 12 },                                   // Mend
+  { pat: 'streak', cols: ['#ffe28a', '#ffffff'], n: 12, life: 520 },                              // Haste
+  { pat: 'burst', cols: ['#ff8a3d', '#ffd36b', '#ff5a2a'], n: 26, R: 1.8, ring: ['#ff8a3d', 1.6], screen: ['#ff8a3d', 0.18] }, // Embers
+  { pat: 'burst', cols: ['#8fe0f0', '#e8f8ff'], n: 22, R: 1.7, screen: ['#8fe0f0', 0.2] },        // Rime
+  { pat: 'rain', cols: ['#3a2a12', '#6a5528', '#241a0e'], n: 16, R: 1.2 },                        // Slick
+  { pat: 'burst', cols: ['#f5ec7a', '#ffffff'], n: 22, R: 1.5, life: 380, screen: ['#fff7b0', 0.35] }, // Static
+  { pat: 'swirl', cols: ['#4a4f66', '#2a2e40', '#6a7090'], n: 20, R: 1.5, size: 1.8, life: 800 },   // Murk
+  { pat: 'rise', cols: ['#ff6a5a', '#ffb08a'], ch: '^', n: 12 },                                   // Might
+  { pat: 'ring', cols: ['#ffffff', '#cfe8ff'], n: 32, R: 6.5, life: 950 },                          // Farsight
+  { pat: 'rise', cols: ['#a0e070', '#6a9a3a'], n: 14 },                                             // Bane
+  { pat: 'swirl', cols: ['#b394e8', '#e0d0ff'], n: 22, R: 1.5 },                                    // Levity
+  { pat: 'rain', cols: ['#8a93a8', '#5a6070', '#b0b8c8'], n: 16, R: 1.1, size: 1.6 },               // Basalt
+  { pat: 'burst', cols: ['#ff8a3d', '#ffd36b', '#ffffff'], n: 46, R: 3.2, life: 800, ring: ['#ffd36b', 3], screen: ['#ff9a4a', 0.4] }, // Phoenix
+  { pat: 'converge', cols: ['#6a4a9a', '#1a1030', '#b394e8'], n: 28, R: 3, ring: ['#6a4a9a', 2.4], screen: ['#1a1030', 0.35] },      // Void
+  { pat: 'ring', cols: ['#9fd0ff', '#ffffff'], n: 24, R: 2.2, echo: true },                         // Echo
+  { pat: 'ring', cols: ['#e8e0cc', '#f0c040'], n: 28, R: 2.6, life: 900 },                          // Chrono
+  { pat: 'rain', cols: ['#6fc3f0', '#2f6ea8', '#cfeaff'], n: 28, R: 2.2 },                          // Tide
+  { pat: 'burst', cols: ['#a0e070', '#ff8a3d'], n: 22, R: 1.6 },                                    // Caustic
+  { pat: 'converge', cols: ['#8a93a8', '#d9dce6'], n: 22, R: 4 },                                   // Lodestone
+  { pat: 'converge', cols: ['#e0505a', '#b394e8'], n: 22, R: 4, from: true },                        // Siphon
+  { pat: 'rain', cols: ['#8a6040', '#c08a4a'], n: 16, R: 1.1 },                                     // Corrode
+  { pat: 'burst', cols: ['#f2f6ff', '#aab8d0'], n: 26, R: 3, life: 520 },                           // Gale
+  { pat: 'rise', cols: ['#9fc0ff', '#e0ecff'], n: 18, ring: ['#9fc0ff', 1.6] },                     // Thrall
+  { pat: 'rise', cols: ['#ffd36b', '#fff0a0'], ch: '*', n: 16 }                                     // Fortune
+];
+function fxPotionAt(k, x, y, big) {
+  const col = potCol(k)[1], s = PFX[k] || { pat: 'rise', cols: [col, '#fff'] };
+  const e = Object.assign({}, s, { x, y, cols: s.cols });
+  if (big) { e.R = (s.R || 1.4) * 1.15; e.n = Math.round((s.n || 14) * 1.3); }
+  if (s.from) { e.from = visMons().map(m => [m.x, m.y]); if (!e.from.length) delete e.from; }
+  delete e.ring; delete e.screen; delete e.echo;
+  fxEmit(Object.assign(e, { d: 160 }));
+  if (s.ring) fxEmit({ x, y, pat: 'ring', cols: [s.ring[0], '#fff'], n: 26, R: s.ring[1], life: 600, d: 160 });
+  if (s.echo) for (let i = 1; i <= 2; i++) fxEmit({ x, y, pat: 'ring', cols: s.cols, n: 24, R: 2.2 + i * 0.8, life: 600, d: 160 + i * 220 });
+  if (s.screen) fxScreen(s.screen[0], s.screen[1], 500, 160);
+}
+function fxDrink(k, p) {
+  const P = G.p, col = potCol(k)[1];
+  fxIcon('pot', col, P.x, P.y, 520);
+  fxPotionAt(k, P.x, P.y, p >= 3);
+}
+function fxThrow(x0, y0, x1, y1, k) {
+  fxPush({ k: 'pr', x: x0, y: y0, x1, y1, name: 'pot', col: potCol(k)[1], t: now(), dur: FXFLIGHT });
+}
+function fxSplashFx(k, p, x, y) {
+  const col = potCol(k)[1];
+  fxPotionAt(k, x, y, true);
+  fxEmit({ x, y, pat: 'burst', cols: [col, '#fff'], n: 14, R: 1.2, life: 420 });
+}
+function fxMix(a, b, r) {
+  const P = G.p, ca = potCol(a)[1], cb = potCol(b)[1], cr = potCol(r)[1];
+  fxEmit({ x: P.x, y: P.y, pat: 'converge', cols: [ca], n: 10, R: 1.7, life: 480, stag: 0.3 });
+  fxEmit({ x: P.x, y: P.y, pat: 'converge', cols: [cb], n: 10, R: 1.7, life: 480, stag: 0.3 });
+  fxEmit({ x: P.x, y: P.y, pat: 'burst', cols: [cr, '#fff'], n: 22, R: 1.5, life: 600, d: 480 });
+  fxEmit({ x: P.x, y: P.y, pat: 'rise', cols: [cr, '#fff'], n: 10, d: 480 });
+  fxIcon('pot', cr, P.x, P.y, 560, 480);
+}
+// ----- scrolls: one entry per scroll index -----
+const SFX = [
+  { pat: 'swirl', cols: ['#b394e8', '#e0d0ff'], n: 22, R: 1.5, arrive: true },                        // Warp
+  { pat: 'ring', cols: ['#7fe0a0', '#c8ffd8'], n: 32, R: 7, life: 950 },                              // Chart
+  { pat: 'burst', cols: ['#6a1020', '#e0505a'], n: 28, R: 3, screen: ['#6a1020', 0.3] },             // Dread
+  { pat: 'rise', cols: ['#ffb060', '#ffffff'], ch: '^', n: 14 },                                      // Temper
+  { pat: 'rise', cols: ['#7fb0ff', '#ffffff'], ch: '^', n: 14 },                                      // Bulwark
+  { pat: 'burst', cols: ['#2a1040', '#8a5fd0'], n: 22, R: 2.2 },                                      // Summons
+  { pat: 'rain', cols: ['#ffd36b', '#fff0a0'], n: 18, R: 1.2, arrive: true },                         // Plumb
+  { pat: 'burst', cols: ['#f5ec7a', '#ffffff'], n: 34, R: 4.2, life: 400, screen: ['#fff7b0', 0.55] }, // Thunderclap
+  { pat: 'rise', cols: ['#ffd36b', '#ffffff'], ch: '*', n: 14 },                                      // Identify
+  { pat: 'rise', cols: ['#ffffff', '#cfe8ff'], n: 16 },                                              // Anathema
+  { pat: 'burst', cols: ['#ff8a3d', '#ffd36b', '#ff4a1a'], n: 30, R: 2.4, ring: ['#ff8a3d', 2.2] },  // Pyre
+  { pat: 'ring', cols: ['#ffe8a0', '#ffffff'], n: 30, R: 2.6, life: 900 },                            // Sanctum
+  { pat: 'rise', cols: ['#9fc0ff', '#e0ecff'], n: 18, ring: ['#9fc0ff', 1.8] },                       // Legion
+  { pat: 'converge', cols: ['#e0505a', '#7a1020'], n: 20, R: 1.9, screen: ['#7a1020', 0.2] },        // Tithe
+  { pat: 'rise', cols: ['#6fe0f0', '#c8faff'], ch: '+', n: 16 }                                       // Recharge
+];
+function fxRead(k, ox, oy) {
+  const P = G.p, s = SFX[k] || { pat: 'rise', cols: ['#e8dcb0', '#fff'] };
+  fxIcon('scr', '#e8dcb0', ox, oy, 520);
+  fxEmit({ x: ox, y: oy, pat: 'rise', cols: ['#e8dcb0', '#fff'], n: 8, R: 1, life: 450 });
+  const moved = s.arrive && (P.x !== ox || P.y !== oy);
+  const at = moved ? [ox, oy] : [P.x, P.y];
+  fxEmit({ x: at[0], y: at[1], pat: s.pat, cols: s.cols, ch: s.ch, n: s.n, R: s.R, life: s.life, d: 180 });
+  if (s.ring) fxEmit({ x: at[0], y: at[1], pat: 'ring', cols: [s.ring[0], '#fff'], n: 26, R: s.ring[1], life: 600, d: 180 });
+  if (s.screen) fxScreen(s.screen[0], s.screen[1], 500, 180);
+  if (moved) fxEmit({ x: P.x, y: P.y, pat: 'burst', cols: s.cols, n: 18, R: 1.4, life: 500, d: 420 });
+}
+// ----- everything else you can use -----
+function fxFood() {
+  const P = G.p;
+  fxIcon('food', '#c98a4a', P.x, P.y, 520);
+  fxEmit({ x: P.x, y: P.y, pat: 'burst', cols: ['#c98a4a', '#e8c080', '#8a5a2a'], n: 12, R: 0.9, life: 420, d: 200 });
+  fxEmit({ x: P.x, y: P.y, pat: 'rise', cols: ['#ffb08a', '#ffffff'], ch: '+', n: 5, d: 260 });
+}
+function fxEquip(kind) {
+  const P = G.p;
+  const spec = { wpn: ['wpn', '#c8d0dc', 'burst', ['#ffffff', '#c8d0dc'], 0.9], arm: ['arm', '#98a4b8', 'ring', ['#98a4b8', '#ffffff'], 1.1], ring: ['ring', '#e8c060', 'ring', ['#ffd36b', '#fff0a0'], 1.2] }[kind];
+  fxIcon(spec[0], spec[1], P.x, P.y, 500);
+  fxEmit({ x: P.x, y: P.y, pat: spec[2], cols: spec[3], n: 14, R: spec[4], life: 420, d: 200 });
+}
+function fxBolt(x0, y0, x1, y1, col, kind) {
+  fxEmit({ x: x0, y: y0, pat: 'burst', cols: [col, '#fff'], n: 8, R: 0.7, life: 300 });
+  const cols = kind === 5 ? ['#e07ac8', '#7fe0a0', '#ffd36b', '#7fb0ff'] : [col, '#fff'];
+  if (kind === 7) fxEmit({ x: x1, y: y1, pat: 'rain', cols: ['#8a6040', '#c0a070'], n: 14, R: 1.2, d: 120 });
+  else if (kind === 4 || kind === 8) { fxEmit({ x: x1, y: y1, pat: 'swirl', cols, n: 16, R: 1.2, d: 120 }); fxEmit({ x: x0, y: y0, pat: 'swirl', cols, n: 14, R: 1.1, d: 120 }); }
+  else if (kind === 6) fxEmit({ x: x1, y: y1, pat: 'rise', cols: ['#b394e8', '#fff'], ch: '+', n: 10, d: 120 });
+  else fxEmit({ x: x1, y: y1, pat: 'burst', cols, n: 18, R: 1.2, life: 480, d: 120 });
+}
+function fxOffer(x, y, mood) {
+  if (mood > 0) { fxEmit({ x, y, pat: 'pillar', cols: ['#ffd36b', '#fff0a0', '#ffffff'], n: 34, R: 3.4, life: 950 }); fxScreen('#ffe8a0', 0.25, 600); }
+  else if (mood < 0) { fxEmit({ x, y, pat: 'burst', cols: ['#e0505a', '#3a1020', '#000000'], n: 26, R: 1.9, life: 600 }); fxScreen('#7a1020', 0.3, 600); }
+  else fxEmit({ x, y, pat: 'rise', cols: ['#aab3d0', '#ffffff'], n: 10 });
+}
+function fxFountainFx(x, y, col) {
+  fxEmit({ x, y, pat: 'burst', cols: [col, '#ffffff'], n: 20, R: 1.3, life: 520 });
+  fxEmit({ x, y, pat: 'rain', cols: [col, '#ffffff'], n: 14, R: 1.4, d: 150 });
+}
+
+// ---------- attack animations ----------
+// Per-actor animation state lives in a WeakMap so it never ends up in a save file.
+const ANIM = new WeakMap();
+function anim(a) { let s = ANIM.get(a); if (!s) { s = {}; ANIM.set(a, s); } return s; }
+function animHurt(t) { if (!t) return; anim(t).hurt = now() + fxDelay; if (MP.co && MP.host) fxPush({ k: 'hr', x: t.x, y: t.y, t: now() + fxDelay, dur: 60 }); }
+const ATKDUR = 260;
+const WSTYLE = { dagger: 'stab', sword: 'slash', axe: 'sweep', spear: 'thrust', mace: 'smash' };
+const WCOL = { dagger: '#e8f0ff', sword: '#ffffff', axe: '#ffd0a0', spear: '#e8f0ff', mace: '#ffe8a0' };
+const MSTYLE = {
+  rat: 'bite', slime: 'smash', leech: 'bite', wisp: 'zap', bomber: 'smash', mite: 'bite', mimic: 'bite', golem: 'smash',
+  wraith: 'claw', warden: 'smash', thief: 'stab', troll: 'smash', spore: 'zap', necro: 'claw', thrall: 'slash', drake: 'bite',
+  gazer: 'zap', wolf: 'claw', lurker: 'bite', warlock: 'zap', jugg: 'smash', pyrelord: 'fire', bat: 'bite', viper: 'bite', hound: 'bite', brute: 'smash', rimesprite: 'zap', ghoul: 'claw', sentinel: 'zap'
+};
+const MSCOL = { wisp: '#cfe8ff', spore: '#c8f0a0', gazer: '#f0e070', warlock: '#e07ac8', pyrelord: '#ff8a3d', drake: '#ffd0a0', wraith: '#c8b0ff', necro: '#b394e8' };
+// from: attacker, to: target actor (or a tile {x,y}); style picks the swing drawn on the target
+function fxAttack(from, to, style, col, amp) {
+  const dx = Math.sign(to.x - from.x), dy = Math.sign(to.y - from.y);
+  const s = anim(from); s.atk = { t: now() + fxDelay, dx, dy, amp: amp == null ? 0.42 : amp };
+  fxPush({ k: 'sl', x: to.x, y: to.y, ox: from.x, oy: from.y, dx, dy, amp: s.atk.amp, style, col: col || '#fff', t: now() + fxDelay + 70, dur: ATKDUR + 40 });
+  const burst = style === 'smash' || style === 'fire' ? 9 : 5;
+  fxEmit({ x: to.x, y: to.y, pat: 'burst', cols: [col || '#fff', '#fff'], n: burst, R: style === 'smash' ? 1.0 : 0.6, life: 300, stag: 0.1, d: 90 });
+}
+function fxMeleeP(m) { const w = G.p.wpn.w; fxAttack(G.p, m, WSTYLE[w] || 'slash', WCOL[w] || '#fff'); }
+function fxMeleeM(m) { const k = m.k; fxAttack(m, G.p, MSTYLE[k] || 'slash', MSCOL[k] || '#ffffff'); }
+// ranged / spell attacks: small recoil plus a bolt that travels
+function fxShoot(m, tx, ty, col) {
+  const s = anim(m); s.atk = { t: now() + fxDelay, dx: -Math.sign(tx - m.x), dy: -Math.sign(ty - m.y), amp: 0.18 };
+  fxPush({ k: 'pb', x: m.x, y: m.y, x1: tx, y1: ty, col, t: now() + fxDelay, dur: 200 });
+  fxEmit({ x: tx, y: ty, pat: 'burst', cols: [col, '#fff'], n: 7, R: 0.7, life: 300, stag: 0.1, d: 190 });
+}
+
+// one color per role (sprites live in graphics.js)
+const ROLECOL={wanderer:'#d9dce6',brawler:'#e0a47a',lancer:'#a8c0d8',pyre:'#ff9a5a',alchemist:'#8fd8a0',scholar:'#b8a0e8',ghost:'#b8c4d8',artificer:'#e8c060',oracle:'#9fd0f0',warden2:'#8a98b8',duelist:'#e8e0d0',mender:'#a8f0c0',stormer:'#f5ec7a',reaper:'#8a8aa8',beast:'#c89a6a'};
+
+// ===== mp.js =====
+// ---------- multiplayer core (no DOM, so the rules tests can load it) ----------
+// CO-OP: one host runs the real game. Every player has their own pack, perks, hunger and statuses
+//   (a "context" that is swapped into G while that player acts). Anyone can act at any time, and
+//   every action ticks the whole world. Guests send commands and receive snapshots.
+// RACE: everybody runs their own game on the same seed and shares a scoreboard.
+// The transport (WebRTC room codes, same-device tabs) lives in net.js and only has to provide
+// MP.sendTo(i,string) / MP.sendHost(obj) / MP.sendProg(obj).
+const CTXF = ['p', 'inv', 'perks', 'kills', 'stats', 'sense', 'windUsed', 'pending', 'kit', 'fortune', 'dt'];
+const MAXCO = 4, MAXRACE = 8;
+
+// ----- player contexts -----
+function mpSwapOut(pl) { for (const f of CTXF) pl[f] = G[f]; }
+function mpSwapIn(pl) { for (const f of CTXF) G[f] = pl[f]; }
+function mpAs(i, fn) {
+  if (!MP.co || MP.cur === i) return fn();
+  const out = MP.cur, a = MP.players[out], b = MP.players[i];
+  mpSwapOut(a); mpSwapIn(b); MP.cur = i;
+  try { return fn(); } finally { mpSwapOut(b); mpSwapIn(a); MP.cur = out; }
+}
+function mpFlush() { if (MP.co && MP.players[MP.cur]) mpSwapOut(MP.players[MP.cur]); }
+function mpPlayerAt(x, y) {
+  const P = G.p;
+  for (const pl of MP.players) { const q = pl.p; if (q && q !== P && !pl.gone && !q.down && q.x === x && q.y === y) return q; }
+  return null;
+}
+function mpMonTurn(m) {
+  if (!MP.co || m.ally) { monTurn(m); return; }
+  let best = -1, bd = 1e9;
+  for (const pl of MP.players) {
+    const p = pl.p; if (!p || p.down || pl.gone) continue;
+    const d = Math.max(Math.abs(p.x - m.x), Math.abs(p.y - m.y));
+    if (d < bd) { bd = d; best = pl.i; }
+  }
+  if (best < 0) return;
+  mpAs(best, () => monTurn(m));
+}
+function mpAlive() { return MP.players.filter(pl => !pl.gone && pl.p && !pl.p.down); }
+
+// ----- co-op: start, floors, falling and reviving -----
+function mpStartCoop(roster) {
+  G = { seed: (Math.random() * 2147483647) | 0, depth: 0, tick: 0, mv: 0, dmv: -1, log: [], dead: false };
+  rng = mulberry(G.seed);
+  MP.on = true; MP.host = true; MP.guest = false; MP.co = true; MP.mode = 'coop'; MP.cur = 0; MP.me = 0; MP.players = [];
+  roster.forEach((r, i) => {
+    initPlayerCtx(r.kit);
+    G.p.pidx = i; G.p.name = r.name;
+    const pl = { i, name: r.name, kit: G.kit, link: r.link || null, ack: 0, gone: false };
+    mpSwapOut(pl); MP.players.push(pl);
+  });
+  mpSwapIn(MP.players[0]);
+  MP.seq = 0; MP.fxSent = FXN; MP.logSent = 0; MP.lastTiles = []; MP.lastUid = 0; MP.uidN = 0;
+  SAVE.runs++; persist();
+  descend();
+}
+function mpArriveParty() {
+  const cur = MP.cur, up = L.up, d = bfs(up.x, up.y), spots = [];
+  for (let i = 0; i < W * H; i++) if (d[i] > 0 && d[i] <= 7 && !monAt(i % W, (i / W) | 0)) spots.push([d[i] + Math.random() * 0.5, i]);
+  spots.sort((a, b) => a[0] - b[0]);
+  let k = 0;
+  for (const pl of MP.players) {
+    if (pl.i === cur || pl.gone) continue;
+    mpAs(pl.i, () => {
+      const P = G.p, s = spots[k++] || spots[0];
+      if (s) { P.x = s[1] % W; P.y = (s[1] / W) | 0; } else { P.x = up.x; P.y = up.y; }
+      P._dv = -1;
+      if (P.down) { P.down = false; P.hp = Math.max(1, Math.ceil(P.mhp * 0.3)); P.st = {}; msg(P.name + ' wakes at the foot of the stairs.', 'good'); }
+      G.windUsed = false;
+    });
+  }
+  G.mv++; computeFov();
+  for (const pl of MP.players) {
+    if (pl.gone) continue;
+    mpAs(pl.i, () => { if (G.depth > 1) G.pending = { type: 'draft', opts: rollDraft() }; else arrive(); });
+  }
+}
+function mpDown(cause) {
+  const P = G.p;
+  P.hp = 0; P.down = true; P.st = {};
+  msg(P.name + ' is down. Stand next to them and press E to revive, or reach the stairs.', 'bad');
+  fxFlash(P.x, P.y, '#e0505a'); fxText(P.x, P.y, 'DOWN', '#ff7a6a');
+  if (MP.players.every(pl => pl.gone || !pl.p || pl.p.down)) mpGameOver(cause);
+}
+function mpGameOver(cause) {
+  mpFlush();
+  G.dead = true; G.cause = cause; G.over = true;
+  for (const pl of MP.players) pl.echoes = Math.floor(G.depth * G.depth * 1.5 + (pl.kills || 0) * 0.5);
+  const me = MP.players[0];
+  G.echoes = me.echoes; SAVE.echoes += me.echoes; SAVE.kills += me.kills || 0; persist();
+  msg('The party is lost. ' + cause + '.', 'bad');
+}
+function mpRevive() {
+  const P = G.p;
+  if (G.dead || G.pending || P.down) return false;
+  for (const pl of MP.players) {
+    const q = pl.p; if (!q || q === P || !q.down || pl.gone) continue;
+    if (Math.max(Math.abs(q.x - P.x), Math.abs(q.y - P.y)) > 1) continue;
+    q.down = false; q.hp = Math.max(1, Math.ceil(q.mhp * 0.4)); q.st = {}; q.sat = Math.max(q.sat, 300);
+    msg('You pull ' + q.name + ' back to their feet.', 'good');
+    fxFlash(q.x, q.y, '#ffe8a0'); fxText(q.x, q.y, '+' + q.hp, '#7fe0a0');
+    fxEmit({ x: q.x, y: q.y, pat: 'pillar', cols: ['#ffd36b', '#fff0a0', '#ffffff'], n: 22, R: 2.4, life: 800 });
+    playerAct(100); return true;
+  }
+  return false;
+}
+// a teammate standing next to you who could be revived
+function mpNearDown() {
+  if (!MP.co || !G || !G.p || G.p.down) return null;
+  const P = G.p;
+  for (const pl of MP.players) { const q = pl.p; if (q && q !== P && q.down && !pl.gone && Math.max(Math.abs(q.x - P.x), Math.abs(q.y - P.y)) <= 1) return q; }
+  return null;
+}
+function mpAfterAct() {
+  if (MP.co && MP.host) mpBroadcast();
+  else if (MP.mode === 'race') mpRaceProgress();
+}
+
+// ----- guest -> host commands -----
+const MPCMD = { tryMove: 2, waitTurn: 0, descendHere: 0, interact: 0, useItem: 1, dropItem: 1, offerItem: 1, throwItem: 3, mixPotions: 2, choosePerk: 1, zapWand: 3 };
+function mpCmd(name, args) {
+  if (name === 'choosePerk') G.pending = null;
+  MP.sent = (MP.sent || 0) + 1;
+  if (MP.sendHost) MP.sendHost({ t: 'cmd', n: MP.sent, a: name, g: args });
+  return true;
+}
+function mpExec(i, c) {
+  const pl = MP.players[i];
+  if (!MP.co || !pl || pl.gone || !c) return;
+  pl.ack = (pl.ack || 0) + 1;
+  const need = MPCMD[c.a];
+  if (need === undefined || !Array.isArray(c.g) || G.dead) { mpBroadcast(); return; }
+  const fns = { tryMove, waitTurn, descendHere, interact, useItem, dropItem, offerItem, throwItem, mixPotions, choosePerk, zapWand };
+  mpAs(i, () => {
+    const P = G.p;
+    if (P.down) return;
+    const a = c.g.slice(0, need);
+    if (c.a === 'choosePerk') { if (!(G.pending && G.pending.type === 'draft' && G.pending.opts.includes(a[0]))) return; }
+    else if (!a.every(v => v === undefined || v === null || (Number.isInteger(v) && Math.abs(v) < 5000))) return;
+    MP.actor = i;
+    try { fns[c.a](...a); } catch (e) { console.error('command failed', c.a, e); }
+  });
+  mpBroadcast();
+}
+function mpLeft(i) {
+  const pl = MP.players[i]; if (!pl || pl.gone) return;
+  pl.gone = true; pl.link = null;
+  mpAs(i, () => msg(pl.name + ' left the party.', 'bad'));
+  if (!G.dead && MP.players.every(q => q.gone || !q.p || q.p.down)) mpGameOver('The party is gone');
+  mpBroadcast();
+}
+
+// ----- snapshots (host -> guests) -----
+const TILE0 = () => ({ w: 0, g: 0, wt: 0, oil: 0, fire: 0, fog: 0, ice: 0, seen: 0, vis: 0, zap: 0 });
+const tileCode = t => JSON.stringify(t, (k, v) => k === 'zap' ? (v && now() - v < 600 ? 1 : undefined) : (v === 0 || v === false ? undefined : v));
+function mpTileDelta(last) {
+  const n = L.t.length, runs = [], pal = [], pm = new Map();
+  let run = null;
+  for (let i = 0; i < n; i++) {
+    const c = tileCode(L.t[i]);
+    if (last[i] === c) { run = null; continue; }
+    last[i] = c;
+    let pi = pm.get(c); if (pi === undefined) { pi = pal.length; pal.push(c); pm.set(c, pi); }
+    if (run && run[2] === pi && run[0] + run[1] === i) run[1]++; else { run = [i, 1, pi]; runs.push(run); }
+  }
+  return { pal, runs };
+}
+const KNOW = ['known', 'scrKnown', 'recipes', 'wandKnown', 'ringKnown', 'godKnown', 'fountKnown', 'affKnown', 'seen', 'biomeSeen'];
+function mpBroadcast() {
+  if (MP.bc || !MP.co || !MP.host) return;
+  MP.bc = true;
+  setTimeout(() => { MP.bc = false; try { mpSendSnapshots(); } catch (e) { console.error('snapshot failed', e); } nui('hsnap'); }, 25);
+}
+function mpBase(full) {
+  mpFlush();
+  if (!L.uid) L.uid = ++MP.uidN;
+  // a full snapshot (late or re-joining guest) uses its own tile cache and leaves the shared cursors alone
+  let last = full ? [] : MP.lastTiles;
+  if (!full && MP.lastUid !== L.uid) { MP.lastTiles = last = []; }
+  if (!full) MP.lastUid = L.uid;
+  const tiles = mpTileDelta(last);
+  let fx = [], log;
+  if (full) log = G.log.slice(-40);
+  else {
+    fx = FX.filter(f => f.n > MP.fxSent).map(f => { const o = Object.assign({}, f); o.age = now() - f.t; delete o.t; return o; });
+    if (FX.length) MP.fxSent = Math.max(MP.fxSent, FX[FX.length - 1].n);
+    log = G.log.filter(e => e.n > MP.logSent);
+    if (G.log.length) MP.logSent = G.log[G.log.length - 1].n;
+  }
+  const know = {}; for (const k of KNOW) if (SAVE[k] !== undefined) know[k] = SAVE[k];
+  return {
+    t: 'snap', q: ++MP.seq, full: !!full, lvl: L.uid, depth: G.depth, tick: G.tick, mv: G.mv, dead: !!G.dead, cause: G.cause,
+    L: { laws: L.laws, dark: !!L.dark, biome: BIOMES.indexOf(L.biome), up: L.up, down: L.down, feat: L.feat || [], items: L.items, mons: L.mons.filter(m => !m.dead) },
+    tiles, fx, log, know,
+    players: MP.players.map(pl => ({ i: pl.i, name: pl.name, kit: pl.kit, gone: !!pl.gone, kills: pl.kills || 0, p: pl.p })),
+    over: G.dead ? MP.players.map(pl => ({ name: pl.name, kills: pl.kills || 0, echoes: pl.echoes || 0 })) : null
+  };
+}
+const mpJson = o => JSON.stringify(o, (k, v) => k[0] === '_' ? undefined : v);
+function mpPrivOf(pl) { return { ack: pl.ack || 0, inv: pl.inv, perks: pl.perks, pending: pl.pending, kills: pl.kills || 0, kit: pl.kit, sense: pl.sense || 0, echoes: pl.echoes || 0 }; }
+function mpSendSnapshots() {
+  if (!MP.co || !MP.host || !G) return;
+  const base = mpBase(false);
+  for (const pl of MP.players) {
+    if (pl.i === 0 || pl.gone || !pl.link) continue;
+    try { pl.link.send(mpJson(Object.assign({}, base, { priv: mpPrivOf(pl) }))); } catch (e) { }
+  }
+}
+function mpSendFull(i) {
+  const pl = MP.players[i]; if (!pl || !pl.link) return;
+  const base = mpBase(true);
+  pl.link.send(mpJson(Object.assign({}, base, { priv: mpPrivOf(pl) })));
+}
+// guest side
+function mpGuestInit(info) {
+  MPG = true; MP.on = true; MP.guest = true; MP.host = false; MP.co = true; MP.mode = 'coop'; MP.me = info.me; MP.cur = info.me;
+  MP.sent = 0; MP.ack = 0; MP.glvl = 0; MP.logN = 0; MP.players = [];
+  G = { seed: 0, depth: 0, tick: 0, mv: 0, dmv: -1, log: [], dead: false, kit: info.kit, kills: 0, stats: null, sense: 0, windUsed: false, pending: null, inv: [], perks: {},
+    p: { x: 0, y: 0, hp: 1, mhp: 1, sat: 1500, energy: 100, st: {}, wpn: { w: 'sword', e: 0 }, arm: { lv: 0, e: 0 } } };
+  L = null;
+}
+function mpApplySnapshot(s) {
+  if (!MPG) return;
+  if (!L || MP.glvl !== s.lvl) {
+    L = { t: Array.from({ length: W * H }, TILE0), mons: [], items: [], laws: [], feat: [], depth: s.depth, up: s.L.up, down: s.L.down, nid: 1, spawnT: 0 };
+    MP.glvl = s.lvl;
+  }
+  const pal = s.tiles.pal.map(c => JSON.parse(c));
+  for (const [i, n, pi] of s.tiles.runs) for (let k = 0; k < n; k++) {
+    const t = Object.assign(TILE0(), pal[pi]); if (t.zap) t.zap = now(); L.t[i + k] = t;
+  }
+  Object.assign(L, { laws: s.L.laws, dark: s.L.dark, biome: s.L.biome >= 0 ? BIOMES[s.L.biome] : null, up: s.L.up, down: s.L.down, feat: s.L.feat, items: s.L.items, mons: s.L.mons, depth: s.depth });
+  G.depth = s.depth; G.tick = s.tick; G.mv = s.mv; G.dead = s.dead; G.cause = s.cause;
+  MP.players = s.players.map(q => ({ i: q.i, name: q.name, kit: q.kit, gone: q.gone, kills: q.kills, p: q.p }));
+  const me = MP.players[MP.me];
+  if (me) G.p = me.p;
+  const pv = s.priv;
+  if (pv) { G.inv = pv.inv; G.perks = pv.perks; G.pending = pv.pending; G.kills = pv.kills; G.kit = pv.kit; G.sense = pv.sense; MP.ack = pv.ack; if (s.dead) G.echoes = pv.echoes; }
+  for (const k in s.know) SAVE[k] = s.know[k];
+  for (const e of s.log) if (e.n > MP.logN) { G.log.push(e); MP.logN = e.n; if (G.log.length > 120) G.log.shift(); }
+  const t0 = now();
+  for (const f of s.fx) { f.t = t0 - f.age; delete f.age; fxApplyRemote(f); }
+  if (s.over) MP.over = s.over;
+  G.mv = s.mv;
+}
+// effects from the host: also drive the lunge/flash animations of whoever is standing there
+function actorAtXY(x, y) {
+  if (MP.players) for (const pl of MP.players) if (pl.p && !pl.gone && pl.p.x === x && pl.p.y === y) return pl.p;
+  return L ? monAt(x, y) : null;
+}
+function fxApplyRemote(f) {
+  if (f.k === 'hr') { const a = actorAtXY(f.x, f.y); if (a) anim(a).hurt = f.t; return; }
+  if (f.k === 'sl') { const a = actorAtXY(f.ox, f.oy); if (a) anim(a).atk = { t: f.t, dx: f.dx, dy: f.dy, amp: f.amp == null ? 0.42 : f.amp }; }
+  FX.push(f);
+  if (FX.length > 240) FX.shift();
+}
+// display text for log lines written by other players
+function mpLogLine(e) {
+  if (!MP.co || e.pid === undefined || e.pid === MP.me || e.cls === 'chat') return e;
+  if (e.cls !== 'good' && e.cls !== 'bad') return null;
+  const pl = MP.players[e.pid], nm = pl ? pl.name : 'Someone';
+  const text = e.text.replace(/^You /, nm + ' ').replace(/\bYou\b/g, nm).replace(/\byour\b/g, 'their').replace(/\byou\b/g, 'them');
+  return { text, cls: e.cls, tick: e.tick };
+}
+
+// ----- race -----
+function mpShadowOn(ws) {
+  if (!MP.realSave) MP.realSave = SAVE;
+  SAVE = Object.assign(defaultSave(), { ws, echoes: 0, runs: 0, kills: 0, best: 0 });
+  for (const k of KITS) SAVE.unlocked[k.id] = 1;
+  buildWorld(); MP.noPersist = true;
+}
+// leave multiplayer: restore the real journal and bank what this run earned
+function mpShadowOff() {
+  if (MP.realSave) {
+    const sh = SAVE, real = MP.realSave;
+    if (MP.mode === 'race' && G && !G.dead && G.depth) {
+      const ech = Math.floor(G.depth * G.depth * 1.5 + (G.kills || 0) * 0.5);
+      sh.echoes += ech; sh.kills += G.kills || 0; sh.runs++; sh.best = Math.max(sh.best || 0, G.depth);
+    }
+    if (MP.mode === 'coop' && MP.guest && G && G.dead && G.echoes) { sh.echoes += G.echoes; sh.kills += G.kills || 0; sh.runs++; }
+    real.echoes += sh.echoes || 0; real.kills += sh.kills || 0; real.runs += sh.runs || 0; real.best = Math.max(real.best || 0, sh.best || 0);
+    SAVE = real; MP.realSave = null; buildWorld();
+  }
+  MP.noPersist = false; persist();
+}
+function mpReset() {
+  MPG = false; MP.on = false; MP.host = false; MP.guest = false; MP.co = false; MP.players = []; MP.cur = 0; MP.me = 0; MP.race = null; MP.over = null;
+  MP.sendHost = MP.sendProg = null;
+}
+function mpStartRace(o) {
+  mpShadowOn(o.ws);
+  MP.on = true; MP.host = !!o.host; MP.guest = !o.host; MP.co = false; MP.mode = 'race'; MP.me = o.me; MP.players = o.players || [];
+  MP.race = { goal: o.goal, t0: Date.now(), board: {}, over: false, last: '', maxDepth: 0, depthAt: 0 };
+  newRun(o.kit, o.seed);
+}
+function mpRaceProgress(force) {
+  const r = MP.race; if (!r || r.over || !G) return;
+  const st = { depth: G.depth, kills: G.kills || 0, hp: Math.max(0, G.p.hp), mhp: G.p.mhp, dead: !!G.dead };
+  const key = st.depth + '|' + st.kills + '|' + st.hp + '|' + st.dead;
+  if (!force && key === r.last) return;
+  r.last = key;
+  if (st.depth > r.maxDepth) { r.maxDepth = st.depth; r.depthAt = Date.now() - r.t0; }
+  st.ms = r.depthAt;
+  if (MP.sendProg) MP.sendProg(st);
+}
+function mpRank(board) {
+  return Object.keys(board).map(k => Object.assign({ i: +k }, board[k]))
+    .sort((a, b) => (b.depth - a.depth) || ((a.ms || 0) - (b.ms || 0)) || ((b.kills || 0) - (a.kills || 0)));
+}
+
+// ===== net.js =====
+// ---------- multiplayer networking ----------
+// Two transports, same interface (a "link" is {send(string), close(), onmessage, onclose}):
+//   peer  - WebRTC through PeerJS. A short room code is all a friend needs. Needs internet.
+//   local - BroadcastChannel. Two tabs or windows on the same device, no network at all.
+// The host is the only authority. Guests only ever talk to the host (a star), so no one else needs to be reachable.
+const NET = { role: null, kind: 'peer', code: null, tp: null, link: null, lobby: null, started: false, name: 'Player', kit: 'wanderer', me: 0, chat: [], ui: {}, board: {} };
+const NETCODE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const netCode = () => Array.from({ length: 5 }, () => NETCODE[Math.floor(Math.random() * NETCODE.length)]).join('');
+const peerLib = () => (typeof window !== 'undefined') && ((window.peerjs && window.peerjs.Peer) || window.Peer);
+const peerOpts = () => (typeof window !== 'undefined' && window.DW_PEER) || {};
+const peerId = code => 'dwell-' + String(code).toLowerCase();
+
+function tpHost(kind, code, cb) {
+  if (kind === 'local') {
+    const bc = new BroadcastChannel('dwell-' + code), links = {};
+    bc.onmessage = ev => {
+      const m = ev.data; if (!m || m.to !== 'h') return;
+      if (m.join) {
+        const l = { send: s => { try { bc.postMessage({ to: m.from, d: s }); } catch (e) { } }, close: () => { try { bc.postMessage({ to: m.from, bye: 1 }); } catch (e) { } } };
+        links[m.from] = l; bc.postMessage({ to: m.from, ok: 1 }); cb.link(l);
+      } else if (m.bye) { const l = links[m.from]; if (l) { delete links[m.from]; l.onclose && l.onclose(); } }
+      else if (m.d !== undefined) { const l = links[m.from]; l && l.onmessage && l.onmessage(m.d); }
+    };
+    setTimeout(cb.ready, 0);
+    return { close() { try { bc.postMessage({ to: '*', bye: 1 }); bc.close(); } catch (e) { } } };
+  }
+  const PeerC = peerLib();
+  if (!PeerC) { setTimeout(() => cb.error('The networking library did not load.'), 0); return { close() { } }; }
+  const peer = new PeerC(peerId(code), peerOpts());
+  let ok = false;
+  peer.on('open', () => { ok = true; cb.ready(); });
+  peer.on('error', e => { if (!ok) cb.error(e.type === 'unavailable-id' ? 'taken' : 'Could not reach the matchmaking server (' + e.type + ').'); });
+  peer.on('connection', c => {
+    const l = { send: s => { if (c.open) c.send(s); }, close: () => { try { c.close(); } catch (e) { } } };
+    c.on('open', () => cb.link(l));
+    c.on('data', d => { if (typeof d === 'string' && l.onmessage) l.onmessage(d); });
+    c.on('close', () => l.onclose && l.onclose());
+    c.on('error', () => l.onclose && l.onclose());
+  });
+  return { close() { try { peer.destroy(); } catch (e) { } } };
+}
+function tpJoin(kind, code, cb) {
+  if (kind === 'local') {
+    const id = Math.random().toString(36).slice(2), bc = new BroadcastChannel('dwell-' + code);
+    const l = { send: s => bc.postMessage({ to: 'h', from: id, d: s }), close: () => { try { bc.postMessage({ to: 'h', from: id, bye: 1 }); bc.close(); } catch (e) { } } };
+    let ok = false;
+    bc.onmessage = ev => {
+      const m = ev.data; if (!m || (m.to !== id && m.to !== '*')) return;
+      if (m.ok && !ok) { ok = true; cb.link(l); }
+      else if (m.bye) l.onclose && l.onclose();
+      else if (m.d !== undefined) l.onmessage && l.onmessage(m.d);
+    };
+    bc.postMessage({ to: 'h', from: id, join: 1 });
+    setTimeout(() => { if (!ok) { cb.error('No room with that code is open on this device.'); try { bc.close(); } catch (e) { } } }, 1500);
+    return { close() { l.close(); } };
+  }
+  const PeerC = peerLib();
+  if (!PeerC) { setTimeout(() => cb.error('The networking library did not load.'), 0); return { close() { } }; }
+  const peer = new PeerC(undefined, peerOpts());
+  let done = false;
+  const fail = m => { if (!done) { done = true; cb.error(m); try { peer.destroy(); } catch (e) { } } };
+  const timer = setTimeout(() => fail('Could not connect. The room may be closed, or a network is blocking direct connections.'), 20000);
+  peer.on('error', e => fail(e.type === 'peer-unavailable' ? 'No room with that code.' : 'Connection problem (' + e.type + ').'));
+  peer.on('open', () => {
+    const c = peer.connect(peerId(code), { reliable: true, serialization: 'raw' });
+    const l = { send: s => { if (c.open) c.send(s); }, close: () => { try { c.close(); peer.destroy(); } catch (e) { } } };
+    c.on('open', () => { if (done) return; done = true; clearTimeout(timer); cb.link(l); });
+    c.on('data', d => { if (typeof d === 'string' && l.onmessage) l.onmessage(d); });
+    c.on('close', () => l.onclose && l.onclose());
+    c.on('error', () => fail('Connection lost.'));
+  });
+  return { close() { clearTimeout(timer); try { peer.destroy(); } catch (e) { } } };
+}
+
+const nsend = (l, o) => { try { l.send(JSON.stringify(o)); } catch (e) { } };
+const nui = (k, ...a) => { try { NET.ui[k] && NET.ui[k](...a); } catch (e) { console.error(e); } };
+function netReset() {
+  if (NET.tp) { try { NET.tp.close(); } catch (e) { } }
+  Object.assign(NET, { role: null, code: null, tp: null, link: null, lobby: null, started: false, me: 0, chat: [], board: {} });
+}
+
+// ---------- host ----------
+function netHostRoom(o) {
+  netReset();
+  Object.assign(NET, { role: 'host', kind: o.kind, name: o.name, kit: o.kit });
+  NET.lobby = { mode: o.mode, goal: o.goal || 10, max: o.mode === 'race' ? MAXRACE : MAXCO, players: [{ id: 0, name: o.name, kit: o.kit, ready: true, link: null }] };
+  const attempt = n => {
+    const code = netCode();
+    NET.tp = tpHost(o.kind, code, {
+      ready() { NET.code = code; hostLobbyChanged(); },
+      error(m) { if (m === 'taken' && n < 6) { try { NET.tp.close(); } catch (e) { } attempt(n + 1); } else { nui('error', m === 'taken' ? 'Could not claim a room code. Try again.' : m); } },
+      link: hostLink
+    });
+  };
+  attempt(0);
+}
+function hostLink(l) {
+  l.onmessage = s => { let m; try { m = JSON.parse(s); } catch (e) { return; } hostMsg(l, m); };
+  l.onclose = () => hostGone(l);
+}
+function hostPlayers() { return NET.lobby.players.map(p => ({ id: p.id, name: p.name, kit: p.kit, ready: p.ready })); }
+function hostLobbyChanged() {
+  const msg = { t: 'lobby', code: NET.code, mode: NET.lobby.mode, goal: NET.lobby.goal, max: NET.lobby.max, players: hostPlayers() };
+  for (const p of NET.lobby.players) if (p.link) nsend(p.link, msg);
+  nui('lobby');
+}
+function hostBroadcast(o, except) { for (const p of NET.lobby.players) if (p.link && p.link !== except) nsend(p.link, o); }
+function cleanName(n, taken) {
+  let s = String(n || 'Player').replace(/[<>&"]/g, '').trim().slice(0, 12) || 'Player', b = s, k = 1;
+  while (taken.includes(s)) s = b + ' ' + (++k);
+  return s;
+}
+function hostMsg(l, m) {
+  if (!m || typeof m.t !== 'string') return;
+  const lob = NET.lobby;
+  if (m.t === 'hello') {
+    if (NET.started) {
+      if (lob.mode === 'coop') {
+        const pl = MP.players.find(q => q.gone && q.name === m.name);
+        if (pl) {
+          pl.gone = false; pl.link = l; l.slot = pl.i;
+          nsend(l, { t: 'welcome', id: pl.i, mode: 'coop', goal: 0, max: lob.max, code: NET.code });
+          nsend(l, { t: 'start', mode: 'coop', me: pl.i, kit: pl.kit, ws: SAVE.ws, players: MP.players.map(q => q.name) });
+          mpAs(pl.i, () => msg(pl.name + ' rejoined.', 'good'));
+          mpSendFull(pl.i); mpBroadcast(); hostChat('', pl.name + ' rejoined.');
+          return;
+        }
+      }
+      nsend(l, { t: 'rej', reason: 'That game has already started.' }); setTimeout(() => l.close(), 200); return;
+    }
+    if (lob.players.length >= lob.max) { nsend(l, { t: 'rej', reason: 'The room is full.' }); setTimeout(() => l.close(), 200); return; }
+    const id = Math.max(...lob.players.map(p => p.id)) + 1;
+    const kit = KITS.find(k => k.id === m.kit) ? m.kit : 'wanderer';
+    const pl = { id, name: cleanName(m.name, lob.players.map(p => p.name)), kit, ready: false, link: l };
+    lob.players.push(pl); l.pid = id;
+    nsend(l, { t: 'welcome', id, name: pl.name, mode: lob.mode, goal: lob.goal, max: lob.max, code: NET.code });
+    hostLobbyChanged(); hostChat('', pl.name + ' joined.');
+    return;
+  }
+  if (m.t === 'leave') { hostGone(l); return; }
+  if (!NET.started) {
+    const pl = lob.players.find(p => p.link === l); if (!pl) return;
+    if (m.t === 'kit' && KITS.find(k => k.id === m.kit)) { pl.kit = m.kit; hostLobbyChanged(); }
+    else if (m.t === 'ready') { pl.ready = !!m.v; hostLobbyChanged(); }
+    else if (m.t === 'chat') hostChat(pl.name, String(m.text || '').slice(0, 140));
+    return;
+  }
+  if (lob.mode === 'coop') {
+    const slot = l.slot;
+    if (slot === undefined) return;
+    if (m.t === 'cmd') mpExec(slot, m);
+    else if (m.t === 'chat') hostChat(MP.players[slot].name, String(m.text || '').slice(0, 140));
+    else if (m.t === 'ping') hostPing(slot, m.x, m.y);
+  } else {
+    const pl = lob.players.find(p => p.link === l); if (!pl) return;
+    if (m.t === 'prog') raceProg(pl.id, m);
+    else if (m.t === 'chat') hostChat(pl.name, String(m.text || '').slice(0, 140));
+  }
+}
+function hostChat(name, text) {
+  const o = { t: 'chat', name, text };
+  hostBroadcast(o); netChatIn(name, text);
+}
+function hostPing(slot, x, y) {
+  if (!MP.co || !Number.isInteger(x) || !Number.isInteger(y) || !inb(x, y)) return;
+  const pl = MP.players[slot];
+  fxEmit({ x, y, pat: 'ring', cols: [ROLECOL[pl.kit] || '#fff', '#fff'], n: 20, R: 1.6, life: 800 });
+  fxEmit({ x, y, pat: 'rise', cols: ['#fff'], ch: '!', n: 4, life: 900 });
+  mpBroadcast();
+}
+function hostGone(l) {
+  const lob = NET.lobby; if (!lob || l.gone) return; l.gone = true;
+  if (!NET.started) {
+    const i = lob.players.findIndex(p => p.link === l); if (i < 0) return;
+    const nm = lob.players[i].name; lob.players.splice(i, 1); hostLobbyChanged(); hostChat('', nm + ' left.');
+    return;
+  }
+  if (lob.mode === 'coop') { if (l.slot !== undefined) { const nm = MP.players[l.slot].name; mpLeft(l.slot); hostChat('', nm + ' disconnected. They can rejoin with the same name.'); } }
+  else {
+    const pl = lob.players.find(p => p.link === l); if (!pl) return;
+    const b = NET.board[pl.id] = Object.assign({ name: pl.name, kit: pl.kit, depth: 0, kills: 0 }, NET.board[pl.id], { dead: true, left: true });
+    hostChat('', pl.name + ' left the race.'); raceBoardOut(); raceCheckEnd();
+  }
+}
+function hostStart() {
+  const lob = NET.lobby; if (!lob || NET.started || NET.role !== 'host') return;
+  if (lob.players.some(p => !p.ready)) return;
+  const roster = lob.players.slice().sort((a, b) => a.id - b.id);
+  NET.started = true;
+  if (lob.mode === 'coop') {
+    mpStartCoop(roster.map(p => ({ name: p.name, kit: p.kit, link: p.link })));
+    roster.forEach((p, i) => { if (p.link) p.link.slot = i; });
+    const names = MP.players.map(q => q.name);
+    roster.forEach((p, i) => { if (p.link) nsend(p.link, { t: 'start', mode: 'coop', me: i, kit: p.kit, ws: SAVE.ws, players: names }); });
+    MP.fxSent = FXN; MP.logSent = G.log.length ? G.log[G.log.length - 1].n : 0;
+    roster.forEach((p, i) => { if (p.link) mpSendFull(i); });
+    nui('start');
+  } else {
+    const seed = (Math.random() * 2147483647) | 0, ws = SAVE.ws, names = roster.map(p => ({ name: p.name, kit: p.kit }));
+    roster.forEach((p, i) => { p.idx = i; if (p.link) nsend(p.link, { t: 'start', mode: 'race', me: i, kit: p.kit, seed, ws, goal: lob.goal, players: names }); });
+    NET.board = {}; roster.forEach((p, i) => { NET.board[i] = { name: p.name, kit: p.kit, depth: 1, kills: 0, hp: 30, mhp: 30, dead: false, ms: 0 }; });
+    MP.sendProg = st => raceProg(0, st);
+    mpStartRace({ seed, ws, goal: lob.goal, kit: roster[0].kit, host: true, me: 0, players: names });
+    nui('start');
+  }
+}
+let raceBoardTimer = 0;
+function raceProg(id, st) {
+  if (!NET.lobby || NET.lobby.mode !== 'race' || !MP.race || MP.race.over) return;
+  const pl = NET.lobby.players.find(p => p.id === id); if (!pl) return;
+  const idx = NET.lobby.players.slice().sort((a, b) => a.id - b.id).findIndex(p => p.id === id);
+  const num = v => Number.isFinite(+v) ? +v : 0;
+  NET.board[idx] = { name: pl.name, kit: pl.kit, depth: num(st.depth), kills: num(st.kills), hp: num(st.hp), mhp: num(st.mhp), dead: !!st.dead, ms: num(st.ms) };
+  if (!raceBoardTimer) raceBoardTimer = setTimeout(() => { raceBoardTimer = 0; raceBoardOut(); }, 120);
+  raceCheckEnd();
+}
+function raceBoardOut() { hostBroadcast({ t: 'board', board: NET.board }); nui('board'); }
+function raceCheckEnd() {
+  const r = MP.race; if (!r || r.over) return;
+  const rank = mpRank(NET.board);
+  const win = rank.find(b => b.depth >= NET.lobby.goal);
+  if (win) { raceEnd('reached depth ' + NET.lobby.goal, win.i); return; }
+  if (rank.length && rank.every(b => b.dead)) raceEnd('everyone fell', null);
+}
+function raceEnd(reason, winner) {
+  const r = MP.race; if (!r || r.over) return;
+  r.over = true;
+  const rank = mpRank(NET.board);
+  const o = { t: 'end', reason, winner: winner === null ? (rank[0] ? rank[0].i : null) : winner, reached: winner !== null, rank, ms: Date.now() - r.t0 };
+  hostBroadcast(o); NET.result = o; nui('end', o);
+}
+function netEndRace() { if (NET.role === 'host' && MP.race && !MP.race.over) raceEnd('ended by the host', null); }
+
+// ---------- guest ----------
+function netJoinRoom(o) {
+  netReset();
+  Object.assign(NET, { role: 'guest', kind: o.kind, name: o.name, kit: o.kit, code: String(o.code).toUpperCase().trim() });
+  NET.tp = tpJoin(o.kind, NET.code, {
+    link(l) {
+      NET.link = l;
+      l.onmessage = s => { let m; try { m = JSON.parse(s); } catch (e) { return; } guestMsg(m); };
+      l.onclose = () => { if (NET.role === 'guest') nui('closed', 'The host left the room.'); };
+      nsend(l, { t: 'hello', name: o.name, kit: o.kit, v: 1 });
+    },
+    error: m => nui('error', m)
+  });
+}
+function guestMsg(m) {
+  if (!m || typeof m.t !== 'string') return;
+  if (m.t === 'welcome') { NET.me = m.id; if (m.name) NET.name = m.name; NET.lobby = { mode: m.mode, goal: m.goal, max: m.max, players: [] }; nui('lobby'); }
+  else if (m.t === 'lobby') { NET.code = m.code; NET.lobby = { mode: m.mode, goal: m.goal, max: m.max, players: m.players }; nui('lobby'); }
+  else if (m.t === 'rej') { nui('error', m.reason); }
+  else if (m.t === 'start') {
+    NET.started = true; NET.board = {};
+    if (m.mode === 'coop') {
+      mpShadowOn(m.ws); mpGuestInit({ me: m.me, kit: m.kit });
+      MP.sendHost = o => nsend(NET.link, o); NET.waitSnap = true;
+      nui('waiting');
+    } else {
+      NET.lobby.mode = 'race'; NET.lobby.goal = m.goal;
+      MP.sendProg = st => nsend(NET.link, Object.assign({ t: 'prog' }, st));
+      mpStartRace({ seed: m.seed, ws: m.ws, goal: m.goal, kit: m.kit, host: false, me: m.me, players: m.players });
+      nui('start');
+    }
+  }
+  else if (m.t === 'snap') {
+    mpApplySnapshot(m);
+    if (NET.waitSnap) { NET.waitSnap = false; nui('start'); } else nui('snap');
+  }
+  else if (m.t === 'chat') netChatIn(m.name, m.text);
+  else if (m.t === 'board') { NET.board = m.board; nui('board'); }
+  else if (m.t === 'end') { if (MP.race) MP.race.over = true; NET.result = m; nui('end', m); }
+  else if (m.t === 'bye') nui('closed', m.reason || 'The host closed the room.');
+}
+function netChatIn(name, text) {
+  NET.chat.push({ name, text }); if (NET.chat.length > 40) NET.chat.shift();
+  nui('chat');
+}
+
+// ---------- shared ----------
+function netSend(o) { if (NET.role === 'guest' && NET.link) nsend(NET.link, o); }
+function netChat(text) {
+  text = String(text || '').trim().slice(0, 140); if (!text) return;
+  if (NET.role === 'host') hostChat(NET.name, text); else netSend({ t: 'chat', text });
+}
+function netPing(x, y) {
+  if (!MP.co) return;
+  if (NET.role === 'host') hostPing(0, x, y); else netSend({ t: 'ping', x, y });
+}
+function netSetKit(kit) {
+  NET.kit = kit;
+  if (NET.role === 'host') { NET.lobby.players[0].kit = kit; hostLobbyChanged(); } else netSend({ t: 'kit', kit });
+}
+function netReady(v) { if (NET.role === 'guest') netSend({ t: 'ready', v: !!v }); }
+function netLeave() {
+  if (NET.role === 'host' && NET.lobby) hostBroadcast({ t: 'bye', reason: 'The host closed the room.' });
+  else if (NET.role === 'guest' && NET.link) nsend(NET.link, { t: 'leave' });
+  const wasMP = MP.on;
+  setTimeout(() => { }, 0);
+  netReset(); NET.ui = NET.ui; // keep ui callbacks
+  if (wasMP || MP.realSave) { mpShadowOff(); }
+  mpReset();
+}
+
 // ===== ui.js =====
 // ---------- interface ----------
 const $=id=>document.getElementById(id);
@@ -1497,6 +2428,7 @@ function sync(){
  if(G.pending&&G.pending.type==='draft'&&view!=='draft')showDraft();
  if(G.dead&&view!=='dead')showDead();
  hud();pack();logs();draw();inspect();
+ if(MP.on)renderParty();
 }
 function showDraft(){
  view='draft';$('draft').hidden=false;
@@ -1513,8 +2445,9 @@ function showDead(){
  setView('dead');
  $('deadmsg').textContent='Killed by '+G.cause+' on depth '+G.depth+'.';
  $('deadstat').textContent=G.kills+' kills  ·  '+G.tick+' turns  ·  +'+G.echoes+' echoes';
+ if(MP.on)mpShowDead();
 }
-$('again').onclick=()=>{renderTitle();setView('title')};
+$('again').onclick=()=>{if(MP.on||NET.role)mpToTitle();else{renderTitle();setView('title')}};
 // ----- hud -----
 const STN={haste:'Hasted',fireproof:'Fireproof',slow:'Slowed',oiled:'Oiled',charge:'Charged',hidden:'Hidden',might:'Mighty',poison:'Poisoned',burn:'Burning',frozen:'Frozen',stone:'Stone',reborn:'Phoenix',echo:'Echo',chrono:'Chrono',confused:'Confused',slowed:'Slowed',doomed:'Doomed',corroded:'Corroded'};
 function hud(){
@@ -1526,13 +2459,14 @@ function hud(){
  $('depth').textContent=G.depth;
  $('wpn').textContent=iname({t:'wpn',w:P.wpn.w,e:P.wpn.e})+' · '+(WPN[P.wpn.w].lo+P.wpn.e+pkN('keen')*2)+'-'+(WPN[P.wpn.w].hi+P.wpn.e+pkN('keen')*2);
  $('arm').textContent=iname({t:'arm',lv:P.arm.lv,e:P.arm.e})+' · '+armorVal();
- {const fh=featHere();$('bint').hidden=!fh;$('pint').hidden=!fh;if(fh)$('bint').textContent=fh.k==='altar'?'Altar':'Drink'}
+ {const fh=featHere(),nd=mpNearDown();$('bint').hidden=!(fh||nd);$('pint').hidden=!(fh||nd);if(fh||nd)$('bint').textContent=nd?'Revive':fh.k==='altar'?'Altar':'Drink'}
  $('status').innerHTML=Object.keys(P.st).filter(k=>P.st[k]>0&&STN[k]).map(k=>`<span class="chip">${STN[k]}${P.st[k]>1&&k!=='reborn'?' '+P.st[k]:''}</span>`).join('');
  $('laws').innerHTML=(L.biome?'<span class="law" style="border-color:#4a6a8a;color:#9fc0e0">'+L.biome.n+'</span>':'')+L.laws.map(l=>`<span class="law" title="${LAWS[l].d}">${LAWS[l].n}</span>`).join('');
 }
 function logs(){
  const el=$('log');
- el.innerHTML=G.log.slice(-40).map(l=>`<div class="l ${l.cls}">${esc(l.text)}</div>`).join('');
+ const rows=MP.co?G.log.slice(-60).map(mpLogLine).filter(Boolean).slice(-40):G.log.slice(-40);
+ el.innerHTML=rows.map(l=>`<div class="l ${l.cls}">${esc(l.text)}</div>`).join('');
  el.scrollTop=el.scrollHeight;
 }
 onMsg=function(){};
@@ -1570,9 +2504,9 @@ $('packlist').addEventListener('click',e=>{
  if(mode==='mix'&&row&&!b){const j=+row.dataset.row;if(G.inv[j]&&G.inv[j].t==='pot'){doMix(mixFirst,j)}return}
  if(!b)return;
  const i=+b.dataset.i,a=b.dataset.a;
- if(a==='use'){mode=null;hint('');useItem(i);sync()}
+ if(a==='use'){mode=null;hint('');const t0=G.inv[i]&&G.inv[i].t;useItem(i);if(t0!=='wand')document.body.classList.remove('packopen');sync()}
  else if(a==='drop'){dropItem(i);sync()}
- else if(a==='offer'){offerItem(i);sync()}
+ else if(a==='offer'){offerItem(i);document.body.classList.remove('packopen');sync()}
  else if(a==='zap'){if(G.inv[i].c<=0){msg('The wand is empty.');sync()}else if(mode==='zap'&&throwIdx===i){mode=null;hint('');pack()}else{document.body.classList.remove('packopen');mode='zap';throwIdx=i;hint('Choose a direction. Tap a tile on the map.');pack()}}
  else if(a==='throw'){if(mode==='throw'&&throwIdx===i){mode=null}else{document.body.classList.remove('packopen');mode='throw';throwIdx=i;hint('Choose where to throw it. Tap a tile on the map.')}pack()}
  else if(a==='mix'){
@@ -1581,13 +2515,14 @@ $('packlist').addEventListener('click',e=>{
   else{mode='mix';mixFirst=i;hint('Pick a second potion to combine. Pick the same one again to combine two of a stack.');pack()}
  }
 });
-function doMix(a,b){mode=null;mixFirst=null;hint('');mixPotions(a,b);sync()}
+function doMix(a,b){mode=null;mixFirst=null;hint('');mixPotions(a,b);document.body.classList.remove('packopen');sync()}
 function hint(t){$('hint').textContent=t;$('hint').hidden=!t;$('phint').textContent=t;$('phint').hidden=!t}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('on',x===b));pack()});
 // ----- input -----
 function act(f){if(G.dead||G.pending||view!=='game')return;autoRun=null;f();mode=null;hint('');sync()}
 const KEYS={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],a:[-1,0],d:[1,0],w:[0,-1],s:[0,1],h:[-1,0],l:[1,0],k:[0,-1],j:[0,1],y:[-1,-1],u:[1,-1],b:[-1,1],n:[1,1],'4':[-1,0],'6':[1,0],'8':[0,-1],'2':[0,1],'7':[-1,-1],'9':[1,-1],'1':[-1,1],'3':[1,1]};
 document.addEventListener('keydown',e=>{
+ if(e.target&&/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName))return;
  if(view==='journal'&&(e.key==='Escape'||e.key==='j')){closeJournal();return}
  if(view!=='game'||e.ctrlKey||e.metaKey||e.altKey)return;
  const k=e.key;
@@ -1613,14 +2548,16 @@ function stepAuto(){
   autoRun=null;sync();return}
  if(P.hp<hpBefore){autoRun=null}
  sync();
- if(autoRun)setTimeout(stepAuto,35);
+ if(autoRun&&!MPG)setTimeout(stepAuto,35);
 }
 function tileFromEvent(e){const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*VW)+camX,y=Math.floor((e.clientY-r.top)/r.height*VH)+camY;return[x,y]}
 cv.addEventListener('mousemove',e=>{hover=tileFromEvent(e);inspect();draw()});
+cv.addEventListener('contextmenu',e=>{if(!MP.co||view!=='game')return;e.preventDefault();const[x,y]=tileFromEvent(e);if(inb(x,y))netPing(x,y)});
 cv.addEventListener('mouseleave',()=>{hover=null;inspect();draw()});
 cv.addEventListener('click',e=>{
  if(view!=='game'||G.dead||G.pending)return;
  const[x,y]=tileFromEvent(e);if(!inb(x,y))return;hover=[x,y];inspect();
+ if(mode==='ping'){mode=null;hint('');netPing(x,y);pack();return}
  if(mode==='zap'){const i=throwIdx;mode=null;hint('');autoRun=null;zapWand(i,x,y);sync();return}
  if(mode==='throw'){
   const t=tileAt(x,y);if(!t||!t.seen){hint('You can only throw at tiles you have seen.');return}
@@ -1653,6 +2590,7 @@ function inspect(){
 // ----- drawing -----
 // draw() lives in graphics.js
 setInterval(()=>{if(view==='game'||view==='draft'||view==='dead')draw()},120);
+(function frame(){if(FX.length&&(view==='game'||view==='draft'||view==='dead'))draw();requestAnimationFrame(frame)})();
 window.addEventListener('resize',()=>{if(G&&view!=='title'){fit();draw()}});
 // ----- journal -----
 function openJournal(){setView('journal');renderJournal();}
@@ -1661,17 +2599,17 @@ $('jclose').onclick=closeJournal;$('jopen').onclick=openJournal;$('jopen2').oncl
 function renderJournal(){
  const pots=POT.map((p,k)=>{
   const c=potCol(k),kn=SAVE.known[k];
-  return`<div class="jrow"><i class="sw big" style="background:${c[1]}"></i><div><b>${c[0]} potion</b> ${kn?'· '+p.n:'· <span class="dim">unknown</span>'}<small>${kn?'Drink: '+esc(p.d)+'<br>Throw: '+esc(p.t):(p.rare?'Rare. Only turns up deeper or through mixing.':'Not yet identified.')}</small></div></div>`}).join('');
- const scr=SCR.map((s,k)=>`<div class="jrow"><i class="sw big scr"></i><div><b>"${WORLD.titles[k]}"</b> ${SAVE.scrKnown[k]?'· '+s.n:'· <span class="dim">unknown</span>'}<small>${SAVE.scrKnown[k]?esc(s.d):'Not yet read.'}</small></div></div>`).join('');
+  return`<div class="jrow">${ji('pot',c[1])}<div><b>${c[0]} potion</b> ${kn?'· '+p.n:'· <span class="dim">unknown</span>'}<small>${kn?'Drink: '+esc(p.d)+'<br>Throw: '+esc(p.t):(p.rare?'Rare. Only turns up deeper or through mixing.':'Not yet identified.')}</small></div></div>`}).join('');
+ const scr=SCR.map((s,k)=>`<div class="jrow">${ji('scr','#e8dcb0')}<div><b>"${WORLD.titles[k]}"</b> ${SAVE.scrKnown[k]?'· '+s.n:'· <span class="dim">unknown</span>'}<small>${SAVE.scrKnown[k]?esc(s.d):'Not yet read.'}</small></div></div>`).join('');
  const rec=Object.keys(SAVE.recipes).map(key=>{const[a,b]=key.split(':').map(Number),r=SAVE.recipes[key];
   const nm=k=>SAVE.known[k]?POT[k].n:potCol(k)[0];
-  return`<div class="jrow"><i class="sw big" style="background:${potCol(a)[1]}"></i><i class="sw big" style="background:${potCol(b)[1]}"></i><div><b>${nm(a)} + ${nm(b)}</b> → ${SAVE.known[r]?POT[r].n:potCol(r)[0]}<small>${a===b?'Two of a kind raise the potency.':''}</small></div></div>`}).join('')||'<div class="empty">No mixes recorded. Combine two potions from your pack to learn what they make.</div>';
- const mons=Object.keys(MON).map(k=>{const d=MON[k],n=SAVE.seen[k]||0;return`<div class="jrow"><span class="gly" style="color:${n?d.col:'#444'}">${n?d.g:'?'}</span><div><b>${n?d.n:'Unknown'}</b> ${n?'· '+n+' slain':''}<small>${n?esc(d.note):'Kill one to learn what it is.'}${n&&WORLD.aff[k]?(()=>{const a=WORLD.aff[k],kn=(SAVE.affKnown||{})[k]||{};return'<br>'+(kn.weak?'Weak to '+ELEMN[a.weak]+'. ':'Weakness unknown. ')+(kn.res?'Resists '+ELEMN[a.res]+'.':'Resistance unknown.')})():''}</small></div></div>`}).join('');
- const wnd=WAND.map((w,k)=>{const kn=SAVE.wandKnown&&SAVE.wandKnown[k];return`<div class="jrow"><i class="sw big eq"></i><div><b>${WORLD.wood[k]} wand</b> ${kn?'· '+w.n:'· <span class="dim">unknown</span>'}<small>${kn?esc(w.d):'Zap it to learn it.'}</small></div></div>`}).join('');
- const rng=RING.map((w,k)=>{const kn=SAVE.ringKnown&&SAVE.ringKnown[k];return`<div class="jrow"><i class="sw big eq"></i><div><b>${WORLD.gem[k]} ring</b> ${kn?'· '+w.n:'· <span class="dim">unknown</span>'}<small>${kn?esc(w.d):'Wear one for a while to learn it.'}</small></div></div>`}).join('');
- const gods=WORLD.gods.map((g,i)=>{const gk=(SAVE.godKnown||{})[i]||{};return`<div class="jrow"><span class="gly" style="color:#ffe8a0">${g.sig}</span><div><b>${g.n}</b><small>${gk.love?'Favors '+ITYPEN[gk.love]+'. ':''}${gk.hate?'Hates '+ITYPEN[gk.hate]+'.':''}${!gk.love&&!gk.hate?'Nothing learned yet. Offer items at its altars.':''}</small></div></div>`}).join('');
- const fts=WORLD.fc.map((c,k)=>{const kn=(SAVE.fountKnown||{})[k];return`<div class="jrow"><span class="gly" style="color:${COLORS[c][1]}">≈</span><div><b>${COLORS[c][0]} fountain</b> ${kn!==undefined?'· '+FOUNT[kn]:'· <span class="dim">untested</span>'}</div></div>`}).join('');
- const bio=BIOMES.map((b,idx)=>{const sn=(SAVE.biomeSeen||{})[idx],pos=WORLD.bio.indexOf(idx);return`<div class="jrow"><span class="gly" style="color:${sn?'#9fc0e0':'#444'}">${sn?'◈':'?'}</span><div><b>${sn?b.n:'Unknown depths'}</b>${sn?' · depths '+(4+3*pos)+'-'+(6+3*pos)+' and every 18 below that':''}<small>${sn?'First met on depth '+sn+'.':'Not yet found.'}</small></div></div>`}).join('');
+  return`<div class="jrow">${ji('pot',potCol(a)[1])}${ji('pot',potCol(b)[1])}<div><b>${nm(a)} + ${nm(b)}</b> → ${SAVE.known[r]?POT[r].n:potCol(r)[0]}<small>${a===b?'Two of a kind raise the potency.':''}</small></div></div>`}).join('')||'<div class="empty">No mixes recorded. Combine two potions from your pack to learn what they make.</div>';
+ const mons=Object.keys(MON).map(k=>{const d=MON[k],n=SAVE.seen[k]||0;return`<div class="jrow">${ji(SPR[k]?k:'slime',n?d.col:'#20242f',!n)}<div><b>${n?d.n:'Unknown'}</b> ${n?'· '+n+' slain':''}<small>${n?esc(d.note):'Kill one to learn what it is.'}${n&&WORLD.aff[k]?(()=>{const a=WORLD.aff[k],kn=(SAVE.affKnown||{})[k]||{};return'<br>'+(kn.weak?'Weak to '+ELEMN[a.weak]+'. ':'Weakness unknown. ')+(kn.res?'Resists '+ELEMN[a.res]+'.':'Resistance unknown.')})():''}</small></div></div>`}).join('');
+ const wnd=WAND.map((w,k)=>{const kn=SAVE.wandKnown&&SAVE.wandKnown[k];return`<div class="jrow">${ji('wand','#b88850')}<div><b>${WORLD.wood[k]} wand</b> ${kn?'· '+w.n:'· <span class="dim">unknown</span>'}<small>${kn?esc(w.d):'Zap it to learn it.'}</small></div></div>`}).join('');
+ const rng=RING.map((w,k)=>{const kn=SAVE.ringKnown&&SAVE.ringKnown[k];return`<div class="jrow">${ji('ring','#e8c060')}<div><b>${WORLD.gem[k]} ring</b> ${kn?'· '+w.n:'· <span class="dim">unknown</span>'}<small>${kn?esc(w.d):'Wear one for a while to learn it.'}</small></div></div>`}).join('');
+ const gods=WORLD.gods.map((g,i)=>{const gk=(SAVE.godKnown||{})[i]||{};return`<div class="jrow">${ji(altarSpr(i,true))}<div><b>${g.n}</b><small>${gk.love?'Favors '+ITYPEN[gk.love]+'. ':''}${gk.hate?'Hates '+ITYPEN[gk.hate]+'.':''}${!gk.love&&!gk.hate?'Nothing learned yet. Offer items at its altars.':''}</small></div></div>`}).join('');
+ const fts=WORLD.fc.map((c,k)=>{const kn=(SAVE.fountKnown||{})[k];return`<div class="jrow">${ji(fountSpr(COLORS[c][1],false))}<div><b>${COLORS[c][0]} fountain</b> ${kn!==undefined?'· '+FOUNT[kn]:'· <span class="dim">untested</span>'}</div></div>`}).join('');
+ const bio=BIOMES.map((b,idx)=>{const sn=(SAVE.biomeSeen||{})[idx],pos=WORLD.bio.indexOf(idx);return`<div class="jrow">${ji(tex('floor',idx+2,0,sn?shade(b.col,1.15,6):'#1a1e2b'),0,!sn)}<div><b>${sn?b.n:'Unknown depths'}</b>${sn?' · depths '+(4+3*pos)+'-'+(6+3*pos)+' and every 18 below that':''}<small>${sn?'First met on depth '+sn+'.':'Not yet found.'}</small></div></div>`}).join('');
  const dds=DEEDS.map(d=>{const dn=(SAVE.deeds||{})[d.id];return`<div class="jrow"><span class="gly" style="color:${dn?'#ffd36b':'#444'}">${dn?'★':'☆'}</span><div><b>${dn?d.n:'???'}</b> <span class="dim">+${d.r} echoes</span><small>${esc(d.h)}</small></div></div>`}).join('');
  $('jbody').innerHTML=`<h3>Potions</h3>${pots}<h3>Scrolls</h3>${scr}<h3>Wands</h3>${wnd}<h3>Rings</h3>${rng}<h3>Mixes you have tried</h3>${rec}<h3>Gods and altars</h3>${gods}<h3>Fountains</h3>${fts}<h3>Biomes</h3>${bio}<h3>Bestiary</h3>${mons}<h3>Deeds</h3>${dds}<p class="dim">Your journal survives death. Colors, titles, sigils and the order of the deep stay fixed until you choose to forget everything.</p>`;
 }
@@ -1681,7 +2619,7 @@ $('bexp').onclick=()=>startAuto('explore');
 $('bstairs').onclick=()=>startAuto('stairs');
 $('bdown').onclick=()=>act(descendHere);
 $('bint').onclick=()=>act(interact);
-$('menu').onclick=()=>{if(G&&!G.dead)saveRun();renderTitle();setView('title')};
+$('menu').onclick=()=>{if(MP.on||NET.role){mpMenu();return}if(G&&!G.dead)saveRun();renderTitle();setView('title')};
 // ----- phone -----
 function detectPhone(){try{const s=localStorage.getItem('deepwell.phone');if(s==='1')return true;if(s==='0')return false}catch(e){}return innerWidth<560||(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&innerWidth<820)}
 function setPhone(on){PH=on;document.body.classList.toggle('phone',on);if(!on)document.body.classList.remove('packopen');try{localStorage.setItem('deepwell.phone',on?'1':'0')}catch(e){}$('phonebtn').textContent='Phone layout: '+(on?'on':'off');if(G&&view!=='title'){fit();draw()}}
@@ -1694,12 +2632,297 @@ document.querySelectorAll('[data-pad]').forEach(b=>b.onclick=()=>{const a=b.data
 $('packclose').onclick=()=>document.body.classList.remove('packopen');
 // (boot runs in 7boot.js)
 
+// ===== ui-mp.js =====
+// ---------- multiplayer interface: lobby, party panel, chat, results ----------
+const MPPREF = 'deepwell.mp';
+const mpPref = () => { try { return JSON.parse(localStorage.getItem(MPPREF)) || {}; } catch (e) { return {}; } };
+const mpSetPref = o => { try { localStorage.setItem(MPPREF, JSON.stringify(Object.assign(mpPref(), o))); } catch (e) { } };
+const LK = { kind: 'peer', mode: 'coop', busy: false };
+const MODEDESC = {
+  coop: 'Up to 4 heroes share one dungeon. Everyone acts when they like and every action moves the world on. Descending takes the whole party along. Stand next to a fallen friend and press E to revive them; the fallen also wake at the foot of the next stairs.',
+  race: 'Up to 8 players run the very same dungeon at once: same floors, same loot, same secret potion colors. A live scoreboard tracks everyone. First to the goal depth wins.'
+};
+const heroIcon = (kit, dim) => ji(SPR['p_' + kit] ? 'p_' + kit : 'player', ROLECOL[kit] || '#d9dce6', dim);
+let toastT = 0;
+function toast(t, ms) {
+  const el = $('toast'); el.textContent = t; el.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, ms || 3200);
+}
+
+// ----- the peer library is only fetched when someone really goes online -----
+const PEER_URLS = ['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
+function ensurePeer(cb, fail) {
+  if (LK.kind === 'local' || peerLib()) { cb(); return; }
+  let i = 0;
+  const next = () => {
+    if (i >= PEER_URLS.length) { fail('The online networking library could not be loaded. Check your connection, or use "This device (other tab)".'); return; }
+    const sc = document.createElement('script');
+    sc.src = PEER_URLS[i++]; sc.onload = () => (peerLib() ? cb() : next()); sc.onerror = next;
+    document.head.appendChild(sc);
+  };
+  next();
+}
+
+// ----- lobby -----
+function fillKits(sel, val) {
+  sel.innerHTML = KITS.map(k => `<option value="${k.id}">${esc(k.n)}</option>`).join('');
+  sel.value = KITS.find(k => k.id === val) ? val : 'wanderer';
+}
+function lobbyErr(m) { const e = $('lerr'); e.textContent = m || ''; e.hidden = !m; }
+function openLobby() {
+  const pr = mpPref();
+  $('lname').value = pr.name || '';
+  fillKits($('lkit'), pr.kit || kitSel);
+  LK.kind = pr.kind || 'peer'; LK.mode = pr.mode || 'coop';
+  $('lgoal').value = pr.goal || 10;
+  setSeg('lkind', LK.kind); setSeg('lmode', LK.mode); lobbyModeUI();
+  lobbyErr('');
+  $('lobby').hidden = false;
+  renderLobby();
+}
+function setSeg(id, v) { document.querySelectorAll('#' + id + ' button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
+function lobbyModeUI() {
+  $('lmodedesc').textContent = MODEDESC[LK.mode];
+  $('lgoalf').hidden = LK.mode !== 'race';
+  $('lnote').textContent = LK.kind === 'peer'
+    ? 'Online play connects players directly (WebRTC) using a free public matchmaking service. Both players need internet. Strict corporate or school networks can block it; if so, try another network.'
+    : 'Open this page in a second tab or window on this device, host in one and join with the code in the other.';
+}
+$('lkind').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LK.kind = b.dataset.v; setSeg('lkind', LK.kind); lobbyModeUI(); });
+$('lmode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LK.mode = b.dataset.v; setSeg('lmode', LK.mode); lobbyModeUI(); });
+$('mpbtn').onclick = openLobby;
+$('lclose').onclick = () => { if (NET.role) { return; } $('lobby').hidden = true; };
+function lobbyArgs() {
+  const name = ($('lname').value || '').trim().slice(0, 12) || 'Player', kit = $('lkit').value;
+  mpSetPref({ name, kit, kind: LK.kind, mode: LK.mode, goal: +$('lgoal').value || 10 });
+  return { name, kit };
+}
+$('lhost').onclick = () => {
+  if (LK.busy) return;
+  const a = lobbyArgs(), goal = Math.max(3, Math.min(40, +$('lgoal').value || 10));
+  lobbyErr(''); LK.busy = true; $('lhost').textContent = 'Opening room…';
+  ensurePeer(() => netHostRoom({ kind: LK.kind, name: a.name, kit: a.kit, mode: LK.mode, goal }), m => { LK.busy = false; $('lhost').textContent = 'Create room'; lobbyErr(m); });
+};
+$('ljoin').onclick = () => {
+  if (LK.busy) return;
+  const code = ($('lcode').value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (code.length !== 5) { lobbyErr('Room codes are 5 letters and numbers.'); return; }
+  const a = lobbyArgs();
+  lobbyErr(''); LK.busy = true; $('ljoin').textContent = 'Joining…';
+  ensurePeer(() => netJoinRoom({ kind: LK.kind, name: a.name, kit: a.kit, code }), m => { LK.busy = false; $('ljoin').textContent = 'Join'; lobbyErr(m); });
+};
+$('lcode').addEventListener('keydown', e => { if (e.key === 'Enter') $('ljoin').click(); });
+function roomLink() {
+  const base = location.href.split(/[?#]/)[0];
+  return base + '?join=' + NET.code + (NET.kind === 'local' ? '&kind=local' : '');
+}
+$('lcopy').onclick = () => {
+  const link = roomLink();
+  const done = () => toast('Invite link copied. Or just tell them the code: ' + NET.code, 3500);
+  try { navigator.clipboard.writeText(link).then(done, () => toast(link, 8000)); } catch (e) { toast(link, 8000); }
+};
+$('lready').onclick = () => { const me = NET.lobby && NET.lobby.players.find(p => p.id === NET.me); netReady(!(me && me.ready)); };
+$('lstart').onclick = () => hostStart();
+$('lleave').onclick = () => { netLeave(); LK.busy = false; $('lhost').textContent = 'Create room'; $('ljoin').textContent = 'Join'; renderLobby(); };
+$('lkit2').onchange = () => { netSetKit($('lkit2').value); mpSetPref({ kit: $('lkit2').value }); };
+function renderLobby() {
+  const inRoom = !!(NET.role && NET.lobby && (NET.role === 'host' ? NET.code : true));
+  $('lstep1').hidden = inRoom; $('lstep2').hidden = !inRoom;
+  $('lclose').hidden = inRoom;
+  if (!inRoom) return;
+  const lob = NET.lobby, host = NET.role === 'host';
+  $('lroomcode').textContent = NET.code || '…';
+  $('lcopy').hidden = !NET.code;
+  const isRace = lob.mode === 'race';
+  $('lroominfo').textContent = (isRace ? 'Race to depth ' + lob.goal + '. Up to ' + lob.max + ' players. ' : 'Co-op, up to ' + lob.max + ' heroes. ') + (host ? 'You are the host.' : 'Waiting for the host to start.');
+  const me = lob.players.find(p => p.id === NET.me);
+  $('lplayers').innerHTML = lob.players.map(p => `<div class="lplayer">${heroIcon(p.kit)}<span class="nm">${esc(p.name)}${p.id === NET.me ? ' <span class="dim">(you)</span>' : ''}${p.id === 0 ? ' <span class="dim">· host</span>' : ''}</span><span class="dim">${esc((KITS.find(k => k.id === p.kit) || {}).n || '')}</span><span class="tag ${p.ready ? 'ok' : ''}">${p.ready ? 'Ready' : 'Not ready'}</span></div>`).join('');
+  const sel = $('lkit2'); if (!sel.options.length) fillKits(sel, NET.kit);
+  if (me && sel.value !== me.kit && document.activeElement !== sel) sel.value = me.kit;
+  $('lready').hidden = host; $('lready').textContent = me && me.ready ? 'Not ready' : 'Ready';
+  $('lstart').hidden = !host;
+  const all = lob.players.every(p => p.ready), n = lob.players.length;
+  $('lstart').disabled = !(all && n >= 2);
+  $('lstart').textContent = 'Start (' + n + ' player' + (n > 1 ? 's' : '') + ')';
+  $('lwait').textContent = host ? (n < 2 ? 'Share the code and wait for at least one friend.' : all ? 'Everyone is ready.' : 'Waiting for everyone to press Ready.') : (me && me.ready ? 'You are ready. Waiting for the host.' : 'Press Ready when you are set.');
+  renderChat();
+}
+function renderChat() {
+  const html = NET.chat.slice(-30).map(c => c.name ? `<div><b>${esc(c.name)}</b> ${esc(c.text)}</div>` : `<div class="sys">${esc(c.text)}</div>`).join('');
+  for (const id of ['lchat', 'chatlog']) { const el = $(id); if (!el) continue; el.innerHTML = html; el.scrollTop = el.scrollHeight; }
+}
+function sendChat(inp) { const t = inp.value.trim(); inp.value = ''; if (t) netChat(t); }
+$('lchatsend').onclick = () => sendChat($('lchatin'));
+$('lchatin').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat($('lchatin')); });
+$('chatsend').onclick = () => sendChat($('chatin'));
+$('chatin').addEventListener('keydown', e => { if (e.key === 'Enter') { sendChat($('chatin')); e.target.blur(); } else if (e.key === 'Escape') e.target.blur(); });
+$('quick').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'pingbtn') { if (!MP.co) return; mode = mode === 'ping' ? null : 'ping'; hint(mode ? 'Tap a tile to ping it for your party. (On a computer: right-click.)' : ''); return; }
+  if (b.dataset.q) netChat(b.dataset.q);
+});
+
+// ----- NET callbacks -----
+function mpToTitle(msg) {
+  try { netLeave(); } catch (e) { }
+  LK.busy = false; $('lhost').textContent = 'Create room'; $('ljoin').textContent = 'Join';
+  $('lobby').hidden = true; $('mpend').hidden = true; $('partycard').hidden = true;
+  autoRun = null; mode = null; hint('');
+  document.body.classList.remove('packopen');
+  renderTitle(); setView('title');
+  if (msg) toast(msg, 4500);
+}
+let tickT = 0;
+function mpEnterGame() {
+  LK.busy = false; $('lhost').textContent = 'Create room'; $('ljoin').textContent = 'Join';
+  $('lobby').hidden = true; $('mpend').hidden = true;
+  $('partycard').hidden = false;
+  $('pingbtn').hidden = !MP.co;
+  document.body.classList.remove('packopen');
+  enterGame();
+  clearInterval(tickT); tickT = setInterval(() => { if (MP.on && MP.mode === 'race') renderParty(); }, 1000);
+  toast(MP.co ? 'Co-op: you are ' + (MP.players[MP.me] ? MP.players[MP.me].name : 'a hero') + '. Descending takes the whole party.' : 'Race! First to depth ' + NET.lobby.goal + ' wins.', 4200);
+}
+Object.assign(NET.ui, {
+  lobby() { LK.busy = false; $('lhost').textContent = 'Create room'; $('ljoin').textContent = 'Join'; if ($('lobby').hidden) $('lobby').hidden = false; renderLobby(); },
+  error(m) {
+    LK.busy = false; $('lhost').textContent = 'Create room'; $('ljoin').textContent = 'Join';
+    if (view === 'game' || view === 'dead') { toast(m, 4500); return; }
+    try { netLeave(); } catch (e) { }
+    $('lobby').hidden = false; renderLobby(); lobbyErr(m);
+  },
+  closed(m) { mpToTitle(m || 'The host left the room.'); },
+  waiting() { $('lwait').textContent = 'The host started. Loading the dungeon…'; },
+  start() { mpEnterGame(); },
+  snap() { mpRefresh(); if (autoRun && MPG) stepAuto(); },
+  hsnap() { mpRefresh(); },
+  chat() {
+    renderChat();
+    const c = NET.chat[NET.chat.length - 1];
+    if (c && c.name && c.name !== NET.name && (view === 'game' || view === 'dead')) toast(c.name + ': ' + c.text, 2600);
+  },
+  board() {
+    const prev = mpPrevDepth, cur = NET.board || {};
+    for (const k in cur) {
+      if (prev[k] !== undefined && cur[k].depth > prev[k] && +k !== NET.me) { NET.chat.push({ name: '', text: cur[k].name + ' reached depth ' + cur[k].depth + '.' }); renderChat(); toast(cur[k].name + ' reached depth ' + cur[k].depth, 2200); }
+      if (prev[k] !== undefined && cur[k].dead && !(prev.dead || {})[k] && +k !== NET.me) { NET.chat.push({ name: '', text: cur[k].name + (cur[k].left ? ' left the race.' : ' has fallen on depth ' + cur[k].depth + '.') }); renderChat(); }
+    }
+    mpPrevDepth = {}; mpPrevDepth.dead = {};
+    for (const k in cur) { mpPrevDepth[k] = cur[k].depth; mpPrevDepth.dead[k] = cur[k].dead; }
+    if (view === 'game' || view === 'dead') { renderParty(); if (view === 'dead') mpShowDead(); }
+  },
+  end(o) { showMpEnd(o); }
+});
+let mpPrevDepth = {}, rfSig = '';
+// redraw after other players acted. The pack list is only rebuilt when it changed, so taps are never swallowed.
+function mpRefresh() {
+  if (view !== 'game' && view !== 'draft' && view !== 'dead') return;
+  if (G.pending && G.pending.type === 'draft' && view !== 'draft') showDraft();
+  if (G.dead && view !== 'dead') showDead();
+  hud(); logs(); draw(); inspect(); renderParty();
+  const sig = JSON.stringify(G.inv) + '|' + (featHere() ? 1 : 0) + '|' + mode + '|' + mixFirst;
+  if (sig !== rfSig) { rfSig = sig; pack(); }
+}
+
+// ----- party panel -----
+const mmss = ms => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+function hpBar(p, col) { const f = Math.max(0, Math.min(1, p.hp / Math.max(1, p.mhp))); return `<div class="pbar"><i style="width:${f * 100}%;background:${col}"></i></div>`; }
+function renderParty() {
+  if (!MP.on) return;
+  const list = $('partylist'), ban = $('partybanner');
+  if (MP.co) {
+    $('partytitle').textContent = 'Party';
+    $('partysub').textContent = 'Depth ' + G.depth;
+    list.innerHTML = MP.players.map(pl => {
+      const p = pl.p || { hp: 0, mhp: 1 }, me = pl.i === MP.me;
+      const st = pl.gone ? 'away' : p.down ? 'DOWN' : p.hp + '/' + p.mhp;
+      return `<div class="pm ${me ? 'me' : ''} ${p.down ? 'down' : ''} ${pl.gone ? 'gone' : ''}">${heroIcon(pl.kit, p.down || pl.gone)}<div class="who"><b>${esc(pl.name)}${me ? ' (you)' : ''}</b>${hpBar(p, p.down ? '#6a2f38' : ROLECOL[pl.kit] || '#7fe0a0')}</div><span class="st">${st}</span></div>`;
+    }).join('');
+    const mine = G.p && G.p.down, near = mpNearDown();
+    ban.hidden = !(mine || near);
+    ban.textContent = mine ? 'You are down. A friend can revive you, or you will wake when the party takes the stairs.' : near ? near.name + ' is down beside you. Press E (Revive) to pull them up.' : '';
+    ban.style.borderColor = near && !mine ? '#2f6a48' : ''; ban.style.background = near && !mine ? '#13261b' : ''; ban.style.color = near && !mine ? '#a8f0c0' : '';
+  } else {
+    const r = MP.race, board = NET.board || {}, rank = mpRank(board), goal = NET.lobby ? NET.lobby.goal : 0;
+    $('partytitle').textContent = 'Race to depth ' + goal;
+    $('partysub').textContent = r ? (r.over ? 'finished' : mmss(Date.now() - r.t0)) : '';
+    ban.hidden = true;
+    list.innerHTML = rank.map((b, n) => `<div class="pm ${b.i === NET.me ? 'me' : ''} ${b.dead ? 'down' : ''}">${heroIcon(b.kit, b.dead)}<div class="who"><b>${n + 1}. ${esc(b.name)}${b.i === NET.me ? ' (you)' : ''}</b>${hpBar({ hp: b.hp, mhp: b.mhp }, b.dead ? '#6a2f38' : ROLECOL[b.kit] || '#7fe0a0')}</div><span class="st">${b.left ? 'left' : b.dead ? 'fell · ' : ''}D${b.depth} · ${b.kills || 0}k</span></div>`).join('') || '<div class="dim">Waiting for the first scores…</div>';
+  }
+}
+
+// ----- game over screens -----
+function mpShowDead() {
+  if (MP.co) {
+    const o = MP.over || MP.players.map(pl => ({ name: pl.name, kills: pl.kills || 0, echoes: pl.echoes || 0 }));
+    $('deadmsg').textContent = 'The party is lost on depth ' + G.depth + (G.cause ? '. ' + G.cause : '') + '.';
+    $('deadstat').innerHTML = o.map(x => esc(x.name) + ': ' + x.kills + ' kills' + (x.echoes ? ' · +' + x.echoes + ' echoes' : '')).join('<br>');
+    $('again').textContent = 'Return to the surface';
+  } else {
+    const rank = mpRank(NET.board || {});
+    $('deadmsg').textContent = 'You fell on depth ' + G.depth + (G.cause ? ' to ' + G.cause : '') + '. The race goes on.';
+    $('deadstat').innerHTML = rank.map((b, n) => (n + 1) + '. ' + esc(b.name) + (b.i === NET.me ? ' (you)' : '') + ': depth ' + b.depth + (b.dead ? ' (fallen)' : '')).join('<br>');
+    $('again').textContent = 'Leave the race';
+  }
+}
+function showMpEnd(o) {
+  if (view === 'title') return;
+  $('mpend').hidden = false;
+  const winner = o.rank.find(b => b.i === o.winner);
+  const iWon = o.winner === NET.me && o.reached;
+  $('mpendt').textContent = o.reached ? (iWon ? 'You win the race!' : (winner ? winner.name : 'Someone') + ' wins the race') : 'Race over';
+  $('mpendr').textContent = (o.reached ? 'First to depth ' + NET.lobby.goal + ' in ' + mmss(o.ms) + '.' : 'The race ended: ' + o.reason + '.') + (o.reached ? '' : ' Highest depth takes the title.');
+  $('mpendtab').innerHTML = '<tr><th>#</th><th>Player</th><th>Depth</th><th>Kills</th><th>Status</th></tr>' + o.rank.map((b, n) => `<tr class="${b.i === NET.me ? 'me' : ''} ${b.i === o.winner ? 'win' : ''}"><td>${b.i === o.winner ? '★' : n + 1}</td><td>${esc(b.name)}</td><td>${b.depth}</td><td>${b.kills || 0}</td><td>${b.left ? 'left' : b.dead ? 'fallen' : 'alive'}</td></tr>`).join('');
+  $('mpendbtn').textContent = 'Back to menu';
+}
+$('mpendbtn').onclick = () => mpToTitle();
+
+// ----- leaving mid-game -----
+let leaveArm = 0;
+function mpMenu() {
+  if (!leaveArm) {
+    leaveArm = setTimeout(() => { leaveArm = 0; $('menu').textContent = 'Menu'; }, 2500);
+    $('menu').textContent = NET.role === 'host' ? 'Close the room? Tap again' : 'Leave? Tap again';
+    return;
+  }
+  clearTimeout(leaveArm); leaveArm = 0; $('menu').textContent = 'Menu';
+  mpToTitle();
+}
+// invite links: ?join=CODE opens the lobby with the code filled in
+(function () {
+  try {
+    const q = new URLSearchParams(location.search), c = (q.get('join') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (c.length === 5) { setTimeout(() => { openLobby(); $('lcode').value = c; if (q.get('kind') === 'local') { LK.kind = 'local'; setSeg('lkind', 'local'); lobbyModeUI(); } $('lname').focus(); }, 0); }
+  } catch (e) { }
+})();
+
 // ===== graphics.js =====
 // ---------- 8-bit graphics: 8x8 sprites + procedural tile textures ----------
 // Legend: . clear  a main  b shade  c light  w white  k ink  r red  y gold  o orange
 const SPR={
 player:['..cccc..','.caaaac.','.awkkwa.','..aaaa..','.caaaac.','caaaaaac','.ab..ba.','.bb..bb.'],
+p_brawler:['.rrrrrr.','.caaaac.','.awkkwa.','..aaaa..','caaaaaac','caaccaac','.ab..ba.','bbb..bbb'],
+p_lancer:['...yy...','.caaaac.','.awkkwa.','..aaaa..','.caccac.','caaaaaac','.ab..ba.','.bb..bb.'],
+p_pyre:['...oo...','..oooo..','.oooooo.','.awkkwa.','..aaaa..','.caooac.','caaaaaac','.bb..bb.'],
+p_alchemist:['..cccc..','.caaaac.','.ywkkwy.','..aaaa..','.caaaac.','caaaaa.r','.ab..bbr','.bb..bb.'],
+p_scholar:['.bbbbbb.','bbbbbbbb','.awkkwa.','..aaaa..','.cwwwwc.','caaaaaac','.ab..ba.','.bb..bb.'],
+p_ghost:['..bbbb..','.baaaab.','.bwaawb.','.baaaab.','baaaaaab','baaaaaab','baaaaaab','ba.ba.ba'],
+p_artificer:['.y.cc.y.','.caaaac.','.awkkwa.','..aaaa..','.caaaac.','caaaaa.y','.ab..bby','.bb..bb.'],
+p_oracle:['..bbbb..','.bbyybb.','.bwkkwb.','..aaaa..','.baaaab.','baaccaab','baaaaaab','.bb..bb.'],
+p_warden2:['c.c..c.c','cccccccc','.baaaab.','.bkaakb.','baaccaab','baaaaaab','baaaaaab','.bb..bb.'],
+p_beast:['c......c','cb.cc.bc','.caaaac.','.awkkwa.','..aaaa..','caaaaaac','cbaaaabc','.bb..bb.'],
 rat:['........','.aa..aa.','aaaaaaa.','akaaaaaa','aaaaaaa.','.b.b..b.','......b.','........'],
+bat:['........','a......a','aa.aa.aa','aaaaaaaa','.aakkaa.','..aaaa..','...bb...','........'],
+viper:['........','...aaa..','..akaaa.','..aaaaa.','...aaa..','.aaaaa..','aabbbaa.','.bbbbb..'],
+hound:['........','a.....a.','aa...aa.','aaaaaaaa','akaaaaaa','aaaaaaab','.ab..ab.','.bb..bb.'],
+brute:['..aaaa..','.aaaaaa.','.akaaka.','aaaaaaaa','aabbbbaa','aabbbbaa','.ab..ba.','bbb..bbb'],
+rimesprite:['..a..a..','...aa...','..awwa..','.aakkaa.','..aaaa..','.a.aa.a.','...aa...','..a..a..'],
+ghoul:['..aaaa..','.aaaaaa.','.akaaka.','.aaaaaa.','a.aaaa.a','a.aaaa.a','..a..a..','.bb..bb.'],
+sentinel:['...aa...','..aaaa..','.awkkwa.','.aaaaaa.','awaaawaa','.aaaaaa.','..abba..','.bb..bb.'],
+p_duelist:['.....r..','.caaaac.','.awkkwa.','..aaaa..','.caaaacw','caaaaa.w','.ab..ba.','.bb..bb.'],
+p_mender:['..cccc..','.caaaac.','.awkkwa.','..aaaa..','.carrac.','caaraaac','.ab..ba.','.bb..bb.'],
+p_stormer:['y.y..y.y','.yyyyyy.','.awkkwa.','..aaaa..','.caayac.','caaayaac','.ab..ba.','.bb..bb.'],
+p_reaper:['..bbbb..','.baaaab.','.bwaawb.','.baaaab.','baaaaaay','baaaaaay','.baaaab.','.bb..bb.'],
 slime:['........','........','..cccc..','.caaaac.','.akaaka.','aaaaaaaa','abbbbbba','.bbbbbb.'],
 archer:['..cccc..','.cwkkwc.','..cccc..','.c.cc.b.','c..cc..b','...cc..b','..c..c.b','.cc..cc.'],
 leech:['........','........','.aaaa...','aaaaaa..','akaaaaa.','.bbaaaaa','..bbbbaa','....bbb.'],
@@ -1850,7 +3073,8 @@ function draw(){
   cx.fillStyle='rgba(0,0,0,0.35)';cx.fillRect(m.x*TS+TS*0.15,m.y*TS+TS*0.88,TS*0.7,TS*0.1);
   const col=m.ally?'#9fc0ff':m.awake?d.col:shade(d.col,0.6);
   const bob=m.awake&&!m.ally&&((tn/300|0)+m.id)%2?-Math.max(1,TS/16)|0:0;
-  cx.save();cx.translate(0,bob);put(sprite(SPR[m.k]?m.k:'slime',col),m.x,m.y);cx.restore();
+  const ao=animOff(m,tn);
+  cx.save();cx.translate(ao[0],bob+ao[1]);put(sprite(SPR[m.k]?m.k:'slime',col),m.x,m.y);if(ao[2]>0){cx.globalAlpha=ao[2];cx.fillStyle='#fff';cx.fillRect(m.x*TS,m.y*TS,TS,TS);cx.globalAlpha=1}cx.restore();
   if(m.st.frozen>0){cx.fillStyle='rgba(143,224,240,0.4)';cx.fillRect(m.x*TS,m.y*TS,TS,TS)}
   if(m.st.burn>0){cx.fillStyle='rgba(255,130,40,0.4)';cx.fillRect(m.x*TS,m.y*TS,TS,TS)}
   if(m.aff.length){cx.strokeStyle='#e8c060';cx.lineWidth=Math.max(1,TS/12);cx.strokeRect(m.x*TS+1,m.y*TS+1,TS-2,TS-2)}
@@ -1859,18 +3083,33 @@ function draw(){
   if(m.hp<m.mhp){const bh=Math.max(2,TS/8|0);cx.fillStyle='#401018';cx.fillRect(m.x*TS,m.y*TS+TS-bh,TS,bh);cx.fillStyle='#e0505a';cx.fillRect(m.x*TS,m.y*TS+TS-bh,TS*m.hp/m.mhp,bh)}
   if(!m.awake&&!m.ally)gl('z',m.x+0.72,m.y+0.2,'#aab3d0',TS*0.45);
  }
- if(!G.dead){
+ {
   const bob=((tn/400|0)&1)?-Math.max(1,TS/16)|0:0;
-  cx.fillStyle='rgba(0,0,0,0.35)';cx.fillRect(P.x*TS+TS*0.15,P.y*TS+TS*0.88,TS*0.7,TS*0.1);
-  cx.save();cx.translate(0,bob);
-  cx.globalAlpha=P.st.hidden>0?0.5:1;
-  put(sprite('player',P.st.burn>0?'#ffb070':P.st.stone>0?'#9aa0a8':'#d9dce6'),P.x,P.y);
-  cx.restore();cx.globalAlpha=1;
-  if(P.st.frozen>0){cx.fillStyle='rgba(143,224,240,0.4)';cx.fillRect(P.x*TS,P.y*TS,TS,TS)}
+  const heroes=MP.co&&MP.players.length?MP.players.filter(q=>q.p&&!q.gone).map(q=>({p:q.p,kit:q.kit,me:q.i===MP.me,name:q.name})):(G.dead?[]:[{p:P,kit:G.kit,me:true}]);
+  for(const h of heroes){
+   const p=h.p;
+   if(p.down){cx.globalAlpha=0.85;gl('†',p.x,p.y,ROLECOL[h.kit]||'#aab',TS*0.8);cx.globalAlpha=1;
+    if(!h.me){cx.font=Math.max(7,TS*0.36)+'px "Press Start 2P",ui-monospace,monospace';cx.fillStyle='rgba(200,210,230,0.75)';cx.fillText(h.name.slice(0,8),p.x*TS+TS/2,p.y*TS-TS*0.08)}
+    continue}
+   cx.fillStyle='rgba(0,0,0,0.35)';cx.fillRect(p.x*TS+TS*0.15,p.y*TS+TS*0.88,TS*0.7,TS*0.1);
+   const ao=animOff(p,tn);
+   cx.save();cx.translate(ao[0],bob+ao[1]);
+   cx.globalAlpha=p.st.hidden>0?0.5:1;
+   put(sprite(SPR['p_'+h.kit]?'p_'+h.kit:'player',p.st.burn>0?'#ffb070':p.st.stone>0?'#9aa0a8':ROLECOL[h.kit]||'#d9dce6'),p.x,p.y);
+   if(ao[2]>0){cx.globalAlpha=ao[2];cx.fillStyle='#fff';cx.fillRect(p.x*TS,p.y*TS,TS,TS);cx.globalAlpha=1}
+   cx.restore();cx.globalAlpha=1;
+   if(p.st.frozen>0){cx.fillStyle='rgba(143,224,240,0.4)';cx.fillRect(p.x*TS,p.y*TS,TS,TS)}
+   if(MP.co&&!h.me){
+    const w=TS*0.8;cx.fillStyle='rgba(0,0,0,0.6)';cx.fillRect(p.x*TS+TS*0.1,p.y*TS-2,w,3);cx.fillStyle=ROLECOL[h.kit]||'#8fd';cx.fillRect(p.x*TS+TS*0.1,p.y*TS-2,w*Math.max(0,p.hp/p.mhp),3);
+    cx.font=Math.max(7,TS*0.36)+'px "Press Start 2P",ui-monospace,monospace';cx.textAlign='center';cx.fillStyle='#0b0d12';cx.fillText(h.name.slice(0,8),p.x*TS+TS/2+1,p.y*TS-TS*0.2+1);cx.fillStyle=ROLECOL[h.kit]||'#fff';cx.fillText(h.name.slice(0,8),p.x*TS+TS/2,p.y*TS-TS*0.2)}
+  }
  }
  for(let i=FX.length-1;i>=0;i--){
   const f=FX[i],a=tn-f.t;
-  if(a>700){FX.splice(i,1);continue}
+  if(a>(f.dur||700)){FX.splice(i,1);continue}
+  if(a<0||f.k==='hr')continue;
+  if(f.k==='sl'||f.k==='pb'){drawAtk(f,a);continue}
+  if(f.k==='e'||f.k==='i'||f.k==='pr'||f.k==='s'){drawFx2(f,a);continue}
   if(f.k==='f'){cx.globalAlpha=Math.max(0,0.7-a/500);cx.fillStyle=f.col;cx.fillRect(f.x*TS,f.y*TS,TS,TS);cx.globalAlpha=1}
   else if(f.k==='l'){cx.globalAlpha=Math.max(0,1-a/350);cx.strokeStyle=f.col;cx.lineWidth=Math.max(2,TS/8);cx.beginPath();cx.moveTo(f.x*TS+TS/2,f.y*TS+TS/2);cx.lineTo(f.x1*TS+TS/2,f.y1*TS+TS/2);cx.stroke();cx.globalAlpha=1}
   else{cx.globalAlpha=Math.max(0,1-a/700);gl(f.txt,f.x,f.y-a/500,'#0b0d12',TS*0.5);gl(f.txt,f.x+0.04,f.y-a/500-0.04,f.col,TS*0.5);cx.globalAlpha=1}
@@ -1880,6 +3119,101 @@ function draw(){
   const g=cx.createRadialGradient(P.x*TS+TS/2,P.y*TS+TS/2,TS*2.5,P.x*TS+TS/2,P.y*TS+TS/2,TS*7);
   g.addColorStop(0,'rgba(7,8,12,0)');g.addColorStop(1,'rgba(7,8,12,0.92)');cx.fillStyle=g;cx.fillRect(0,0,W*TS,H*TS)}
  cx.restore();
+}
+
+// ---------- item-use effects (drawn inside the camera transform) ----------
+function fxRnd(seed,i,j){const v=Math.sin(seed*12.9898+i*78.233+j*37.719)*43758.5453;return v-Math.floor(v)}
+function drawFx2(f,a){
+ const u0=a/f.dur;
+ if(f.k==='s'){cx.globalAlpha=Math.max(0,f.a*(1-u0));cx.fillStyle=f.col;cx.fillRect(-9999,-9999,19999,19999);cx.globalAlpha=1;return}
+ if(f.k==='i'){
+  const al=u0<0.65?1:Math.max(0,(1-u0)/0.35),sc=0.8+u0*0.5,y=f.y-0.1-u0*1.3;
+  cx.globalAlpha=al;cx.save();cx.translate((f.x+0.5)*TS,(y+0.5)*TS);cx.scale(sc,sc);
+  cx.drawImage(sprite(f.name,f.col),0,0,8,8,-TS/2,-TS/2,TS,TS);cx.restore();cx.globalAlpha=1;return}
+ if(f.k==='pr'){
+  const x=f.x+(f.x1-f.x)*u0,y=f.y+(f.y1-f.y)*u0-Math.sin(Math.PI*u0)*1.1;
+  cx.save();cx.translate((x+0.5)*TS,(y+0.5)*TS);cx.rotate(u0*12);
+  cx.drawImage(sprite(f.name,f.col),0,0,8,8,-TS*0.35,-TS*0.35,TS*0.7,TS*0.7);cx.restore();return}
+ // particle emitter
+ const px=Math.max(2,Math.round(TS/8*(f.size||1))),cxx=f.x+0.5,cyy=f.y+0.5;
+ for(let i=0;i<f.n;i++){
+  const r1=fxRnd(f.seed,i,1),r2=fxRnd(f.seed,i,2),r3=fxRnd(f.seed,i,3),r4=fxRnd(f.seed,i,4);
+  const u=(a-r1*f.stag*f.life)/f.life;if(u<0||u>1)continue;
+  const ang=r2*6.2832,col=f.cols[(r4*f.cols.length)|0],R=f.R;let x=cxx,y=cyy,dx=0,dy=0;
+  switch(f.pat){
+   case 'rise':x=cxx+(r2-0.5)*0.9;y=cyy+0.3-u*(0.8+R*0.5);break;
+   case 'burst':{const d=R*(1-(1-u)*(1-u))*(0.4+0.6*r3);x=cxx+Math.cos(ang)*d;y=cyy+Math.sin(ang)*d+u*u*0.4;break}
+   case 'converge':{let sx=cxx+Math.cos(ang)*R*(0.6+0.4*r3),sy=cyy+Math.sin(ang)*R*(0.6+0.4*r3);
+    if(f.from&&f.from.length){const m=f.from[i%f.from.length];sx=m[0]+0.5;sy=m[1]+0.5}
+    x=sx+(cxx-sx)*u*u;y=sy+(cyy-sy)*u*u;break}
+   case 'ring':{const an=i/f.n*6.2832;x=cxx+Math.cos(an)*R*u;y=cyy+Math.sin(an)*R*u;break}
+   case 'rain':x=cxx+(r2-0.5)*2*R;y=cyy-1.8+u*2.1;break;
+   case 'swirl':{const an=ang+u*5,d=R*(0.3+0.7*r3)*(1-u*0.5);x=cxx+Math.cos(an)*d;y=cyy+Math.sin(an)*d*0.8-u*0.5;break}
+   case 'pillar':x=cxx+(r2-0.5)*1.0;y=cyy+0.5-u*R;break;
+   case 'streak':{const d=u*R*2.2;dx=Math.cos(ang);dy=Math.sin(ang);x=cxx+dx*d;y=cyy+dy*d;break}
+  }
+  cx.globalAlpha=Math.max(0,1-u*u);
+  if(f.pat==='streak'){cx.strokeStyle=col;cx.lineWidth=px;cx.beginPath();cx.moveTo(x*TS,y*TS);cx.lineTo((x-dx*0.35)*TS,(y-dy*0.35)*TS);cx.stroke()}
+  else if(f.ch&&i%2===0){cx.font=(TS*0.5)+'px "Press Start 2P",ui-monospace,monospace';cx.fillStyle=col;cx.textAlign='center';cx.textBaseline='middle';cx.fillText(f.ch,x*TS,y*TS)}
+  else{cx.fillStyle=col;cx.fillRect(Math.round(x*TS-px/2),Math.round(y*TS-px/2),px,px)}
+ }
+ cx.globalAlpha=1;
+}
+
+// ---------- attack animation drawing ----------
+function animOff(a,tn){
+ const s=ANIM.get(a);if(!s)return[0,0,0];let ox=0,oy=0,fl=0;
+ if(s.atk){const u=(tn-s.atk.t)/ATKDUR;if(u>=0&&u<1){const k=Math.sin(Math.PI*Math.min(1,u*1.15))*s.atk.amp*TS;ox=s.atk.dx*k;oy=s.atk.dy*k}}
+ if(s.hurt){const u=(tn-s.hurt)/280;if(u>=0&&u<1){fl=(1-u)*0.55;ox+=Math.sin(u*28)*(1-u)*TS*0.09}}
+ return[ox,oy,fl];
+}
+function drawAtk(f,a){
+ const u=Math.min(1,a/f.dur),T=TS,X=f.x*T,Y=f.y*T;
+ cx.save();cx.lineCap='round';cx.strokeStyle=f.col;cx.fillStyle=f.col;cx.globalAlpha=Math.max(0,1-u*u);
+ const lw=Math.max(2,T/7);cx.lineWidth=lw;
+ if(f.k==='pb'){
+  const k=Math.min(1,a/f.dur),x=(f.x+(f.x1-f.x)*k+0.5)*T,y=(f.y+(f.y1-f.y)*k+0.5)*T,r=Math.max(2,T/6);
+  cx.globalAlpha=1;cx.fillStyle='#fff';cx.fillRect(x-r,y-r,r*2,r*2);cx.fillStyle=f.col;cx.fillRect(x-r*0.6,y-r*0.6,r*1.2,r*1.2);cx.restore();return}
+ const fl=f.dx<0?-1:1;
+ switch(f.style){
+  case 'slash':{ // diagonal swoosh that sweeps across
+   const e=Math.min(1,u*2.2);cx.beginPath();cx.moveTo(X+T*(fl>0?0.1:0.9),Y+T*0.05);cx.lineTo(X+T*(fl>0?0.1:0.9)+fl*T*0.8*e,Y+T*0.05+T*0.9*e);cx.stroke();
+   cx.globalAlpha*=0.5;cx.beginPath();cx.moveTo(X+T*(fl>0?0.28:0.72),Y);cx.lineTo(X+T*(fl>0?0.28:0.72)+fl*T*0.7*e,Y+T*0.8*e);cx.stroke();break}
+  case 'claw':{
+   const e=Math.min(1,u*2.2);for(let i=0;i<3;i++){const ox=T*(0.2+i*0.25);cx.beginPath();cx.moveTo(X+ox,Y+T*0.08);cx.lineTo(X+ox-T*0.22*e,Y+T*(0.08+0.84*e));cx.stroke()}break}
+  case 'stab':case 'thrust':{
+   const len=f.style==='thrust'?1.5:1.0,e=Math.min(1,u*2.5),sx=(f.ox+0.5)*T,sy=(f.oy+0.5)*T;
+   const ex=(f.x+0.5)*T+f.dx*T*(len-1)*0.5,ey=(f.y+0.5)*T+f.dy*T*(len-1)*0.5;
+   cx.beginPath();cx.moveTo(sx+(ex-sx)*0.35,sy+(ey-sy)*0.35);cx.lineTo(sx+(ex-sx)*(0.35+0.65*e),sy+(ey-sy)*(0.35+0.65*e));cx.stroke();break}
+  case 'sweep':{ // axe: circle swept around the attacker
+   const cxp=(f.ox+0.5)*T,cyp=(f.oy+0.5)*T,e=Math.min(1,u*1.8);cx.beginPath();cx.arc(cxp,cyp,T*0.95,-1.6+u*2,-1.6+u*2+e*4.6);cx.lineWidth=lw*1.3;cx.stroke();break}
+  case 'smash':{
+   const e=Math.min(1,u*2),r=T*(0.2+0.5*e);cx.lineWidth=lw;cx.strokeRect(X+T/2-r,Y+T/2-r,r*2,r*2);
+   for(let i=0;i<4;i++){const an=i*1.5708+0.78;cx.beginPath();cx.moveTo(X+T/2+Math.cos(an)*r,Y+T/2+Math.sin(an)*r);cx.lineTo(X+T/2+Math.cos(an)*(r+T*0.25),Y+T/2+Math.sin(an)*(r+T*0.25));cx.stroke()}break}
+  case 'bite':{
+   const e=Math.min(1,u*2.4),g=T*0.42*(1-e);cx.fillStyle='#fff';
+   for(const s of[-1,1]){const yy=Y+T/2+s*(T*0.08+g);cx.beginPath();cx.moveTo(X+T*0.2,yy+s*T*0.34);cx.lineTo(X+T*0.35,yy);cx.lineTo(X+T*0.5,yy+s*T*0.34);cx.lineTo(X+T*0.65,yy);cx.lineTo(X+T*0.8,yy+s*T*0.34);cx.lineTo(X+T*0.8,yy+s*T*0.38);cx.lineTo(X+T*0.2,yy+s*T*0.38);cx.closePath();cx.fill()}break}
+  case 'zap':{
+   cx.beginPath();let x=(f.ox+0.5)*T,y=(f.oy+0.5)*T;const tx=(f.x+0.5)*T,ty=(f.y+0.5)*T;cx.moveTo(x,y);
+   for(let i=1;i<=4;i++){const k=i/4,j=(fxRnd(Math.floor(f.t/50),i,9)-0.5)*T*0.5;cx.lineTo(x+(tx-x)*k+(i<4?j:0),y+(ty-y)*k+(i<4?-j:0))}cx.stroke();break}
+  case 'fire':{
+   for(let i=0;i<5;i++){const r=T*(0.15+0.5*u)*(0.5+fxRnd(7,i,1)),an=i*1.26;cx.fillStyle=i%2?'#ffd36b':'#ff8a3d';cx.fillRect(X+T/2+Math.cos(an)*r-lw/2,Y+T/2+Math.sin(an)*r-lw-u*T*0.4,lw,lw*1.5)}
+   cx.globalAlpha*=0.4;cx.fillStyle='#ff8a3d';cx.fillRect(X,Y,T,T);break}
+ }
+ cx.restore();
+}
+
+// ---------- one look per role ----------
+function roleSpr(){return SPR['p_'+G.kit]?'p_'+G.kit:'player'}
+
+// ---------- small pixel icons for HTML (journal, role cards) ----------
+const ICONS=new Map();
+function ji(src,col,dim){
+ let key,cv;
+ if(typeof src==='string'){key=src+'|'+col;cv=null}else{cv=src;key=null}
+ let url=key&&ICONS.get(key);
+ if(!url){const c=cv||sprite(src,col);url=c.toDataURL();if(key)ICONS.set(key,url)}
+ return'<img class="ji'+(dim?' dim':'')+'" alt="" src="'+url+'">';
 }
 
 // ===== boot.js =====
