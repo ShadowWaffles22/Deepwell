@@ -1,0 +1,229 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Press+Start+2P&family=Spectral:ital,wght@0,300;0,500;1,300&display=swap">
+<style>
+/* Layout: one dark world. Map left, ledger right; stacks on phones. Single committed look. */
+:root{--bg:#0b0d12;--panel:#12151d;--panel2:#181c27;--line:#262b3a;--fg:#d9dce6;--dim:#8089a3;--accent:#e8b65a;--hp:#d9505c;--good:#7fe0a0;--bad:#ff8a7a;--mix:#c9a0ff;
+--pix:'Press Start 2P',var(--mono);--serif:'Spectral',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--mono);font-size:13px;line-height:1.45;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:6px 10px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+h1,h2,h3{font-family:var(--serif);font-weight:300;margin:0;text-wrap:balance}
+h1{font-family:var(--pix);font-weight:400;font-size:clamp(26px,8vw,60px);letter-spacing:.02em;line-height:1.15;color:var(--accent);text-shadow:4px 4px 0 #3a2a0a}
+h2{font-family:var(--pix);font-weight:400;font-size:15px;line-height:1.6}h3{font-size:18px;color:var(--accent);margin:18px 0 6px;font-style:italic}
+.wrap{max-width:1180px;margin:0 auto}
+.dim{color:var(--dim)}
+#title .wrap{display:flex;flex-direction:column;gap:20px;padding-block:24px;max-width:860px}
+#title p.lede{font-family:var(--serif);font-size:19px;max-width:60ch;margin:0;color:#b9bfd3}
+#kits{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.kit{display:flex;flex-direction:column;gap:3px;text-align:left;padding:10px 12px;min-width:0}
+.kit b{font-weight:600}.kit span{color:var(--dim);font-size:12px}.kit em{font-style:normal;color:var(--accent);font-size:11px;margin-top:auto;padding-top:4px}
+.kit.sel{border-color:var(--accent);background:#1d2030}
+.kit.locked b{color:var(--dim)}
+.row2{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.primary{background:var(--accent);color:#14110a;border-color:var(--accent);font-weight:600;padding:9px 16px}
+.primary:hover:not(:disabled){background:#f3c56e}
+#game .wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+@media(max-width:900px){#game .wrap{grid-template-columns:minmax(0,1fr)}}
+#mapbox{overflow-x:auto;background:#0b0d12;border:1px solid var(--line);border-radius:4px}
+#map{display:block;margin:0 auto;cursor:crosshair;image-rendering:pixelated}
+.side{display:flex;flex-direction:column;gap:10px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 12px;min-width:0}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.top .d{font-family:var(--pix);font-size:22px;font-weight:400;line-height:1;color:var(--accent)}
+.bar{height:9px;background:#1c2030;border-radius:2px;overflow:hidden;margin:4px 0}
+#hpbar{height:100%;background:var(--hp);transition:width .15s}
+#satbar{height:100%;background:#c9a85a}#satbar.low{background:#e0705a}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:12px}
+.kv span:first-child{color:var(--dim)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.chip{font-size:11px;padding:1px 6px;border:1px solid var(--line);border-radius:10px;color:#b9bfd3;background:#161a25}
+.law{font-size:11px;padding:1px 6px;border:1px solid #6a4a2a;border-radius:10px;color:#e8b65a}
+#inspect{min-height:56px;font-size:12px}
+#inspect small{color:var(--dim)}
+#log{height:150px;overflow-y:auto;font-size:12px}
+.l{padding:1px 0;color:#aeb5cb}.l.good{color:var(--good)}.l.bad{color:var(--bad)}.l.deed{color:#ffd36b}.l.depth{color:var(--accent);font-family:var(--serif);font-size:15px;font-style:italic}.l.law{color:#e8b65a}.l.learn{color:#9fd0ff}.l.mix{color:var(--mix)}.l.item{color:#cfd5e6}
+.tabs{display:flex;gap:4px;align-items:center}
+.tabs button{padding:3px 9px;font-size:12px}.tabs button.on{border-color:var(--accent);color:var(--accent)}
+.tabs .sp{flex:1}
+#packlist{display:flex;flex-direction:column;gap:4px;max-height:340px;overflow-y:auto;margin-top:8px}
+.row{display:flex;gap:8px;align-items:center;padding:5px 6px;border:1px solid transparent;border-radius:3px;background:#141824;min-width:0}
+.row.pick{border-color:var(--mix);cursor:pointer}
+.nm{flex:1;min-width:0}.nm b{font-weight:500;overflow-wrap:anywhere}.nm small{display:block;color:var(--dim);font-size:11px;line-height:1.3}
+.acts{display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end}
+.acts button{padding:2px 7px;font-size:11px}.acts button.on{border-color:var(--accent);color:var(--accent)}.acts .ghost{color:var(--dim)}
+.sw{display:inline-block;width:12px;height:16px;border-radius:2px 2px 6px 6px;flex:none;border:1px solid #0006}
+.sw.scr{background:#e8dcb0;border-radius:2px;height:14px}.sw.eq{background:#8a93a8;border-radius:1px;width:8px}
+.sw.big{width:16px;height:22px}
+.ji{width:32px;height:32px;flex:none;image-rendering:pixelated;image-rendering:crisp-edges}.ji.dim{opacity:.45}
+.empty{color:var(--dim);padding:8px 2px}
+#hint{color:var(--accent);font-size:12px;margin-top:6px}
+.ctrl{display:flex;flex-wrap:wrap;gap:6px}
+.keys{color:var(--dim);font-size:11px;line-height:1.5}
+.overlay{position:fixed;inset:0;background:#05060acc;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px max(16px,env(safe-area-inset-left,0px));z-index:5}
+.sheet{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;max-width:760px;width:100%;margin:auto}
+#draftopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px}
+.perk{display:flex;flex-direction:column;gap:6px;text-align:left;padding:14px;min-width:0}
+.perk b{font-family:var(--serif);font-size:20px;font-weight:500}.perk i{color:var(--accent);font-style:normal;font-size:11px}.perk span{color:#b9bfd3}
+.jrow{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #1b2030}
+.jrow small{display:block;color:var(--dim);font-size:11px;margin-top:2px}
+.gly{font-size:20px;width:22px;text-align:center;flex:none}
+.jhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+button,#map{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.padcard,.pclose,.phint{display:none}
+.phint{color:var(--accent);font-size:12px;padding:2px 2px}
+.dpad{display:grid;grid-template-columns:repeat(3,56px);grid-auto-rows:56px;gap:5px}
+.dpad button,.pacts button{padding:0;font-size:18px;user-select:none;-webkit-user-select:none}
+.dpad button[data-pad]{font-size:12px}
+.pacts{display:grid;grid-template-columns:1fr 1fr;gap:5px;align-content:start}
+.pacts button{font-size:13px;min-height:44px}
+body.phone{font-size:13px}
+body.phone #game .wrap{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+body.phone #mapbox,body.phone .card{width:100%}
+body.phone .row{flex-wrap:wrap}
+body.phone .row .nm{flex:1 1 55%}
+body.phone .row .acts{flex:1 1 100%;justify-content:flex-start}
+body.phone .acts button{min-height:36px}
+body.phone .side{display:contents}
+body.phone .hudcard{order:-1;padding:8px 10px}
+body.phone .hudcard .top .d{font-size:22px}
+body.phone .eqrow{display:none}
+body.phone #mapbox{order:0;overflow:hidden}
+body.phone .phint{order:1;display:block}
+body.phone .phint[hidden]{display:none}
+body.phone #inspect{order:2;min-height:0;padding:6px 10px}
+body.phone .padcard{order:3;display:grid;grid-template-columns:auto 1fr;gap:10px;justify-content:space-between}
+body.phone .ctrlcard{display:none}
+body.phone #log{order:4;height:84px}
+body.phone .packcard{display:none}
+body.phone.packopen .packcard{display:block;position:fixed;inset:0;z-index:7;overflow-y:auto;border-radius:0;border:0;background:var(--panel);padding:max(12px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px))}
+body.phone.packopen #packlist{max-height:none}
+body.phone .pclose{display:inline-block}
+body.phone .acts button{padding:6px 10px;font-size:12px}
+body.phone .tabs{flex-wrap:wrap}
+
+/* ---- multiplayer ---- */
+input,select{font:inherit;color:var(--fg);background:#0e1119;border:1px solid var(--line);border-radius:3px;padding:6px 8px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.field{display:flex;flex-direction:column;gap:4px;margin:0 0 10px}
+.field label,.codebox .dim{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.seg{display:flex;gap:0}.seg button{border-radius:0;margin-left:-1px;flex:1}.seg button:first-child{border-radius:3px 0 0 3px;margin-left:0}.seg button:last-child{border-radius:0 3px 3px 0}
+.seg button.on{background:#232838;border-color:var(--accent);color:var(--accent);position:relative}
+.lcols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.lcols .card{display:flex;flex-direction:column;gap:8px}.lcols h3{margin:0}
+#lcode{text-transform:uppercase;letter-spacing:.3em;font-size:18px;text-align:center}
+.err{color:var(--bad);margin:8px 0 0}
+.codebox{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.codebox b{font-family:var(--pix);font-size:26px;letter-spacing:.18em;color:var(--accent)}
+.lplayer{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #1b2030}
+.lplayer .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lplayer .tag{font-size:11px;padding:1px 6px;border:1px solid var(--line);border-radius:10px;color:var(--dim)}
+.lplayer .tag.ok{color:var(--good);border-color:#2f6a48}
+.chatbox{margin-top:10px}
+.chatlog{height:84px;overflow-y:auto;font-size:12px;background:#0e1119;border:1px solid var(--line);border-radius:3px;padding:4px 6px;margin-bottom:6px}
+.chatlog .sys{color:var(--dim);font-style:italic}.chatlog b{color:var(--accent)}
+.chatrow{display:flex;gap:6px}.chatrow input{flex:1}
+.quick{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.quick button{padding:3px 8px;font-size:11px}
+.partycard .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.pm{display:flex;align-items:center;gap:8px;padding:3px 0}
+.pm .ji{width:24px;height:24px}
+.pm .who{flex:1;min-width:0}.pm .who b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.pm .pbar{height:5px;background:#0e1119;border-radius:2px;overflow:hidden;margin-top:2px}.pm .pbar i{display:block;height:100%}
+.pm .st{font-size:11px;color:var(--dim);white-space:nowrap}.pm.me .who b{color:var(--accent)}
+.pm.down .st{color:var(--bad)}.pm.gone{opacity:.45}
+.banner{margin:6px 0;padding:6px 8px;border:1px solid #6a2f38;background:#2a1318;border-radius:3px;color:#ffb0a8;font-size:12px}
+#toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);max-width:min(92vw,520px);background:#1b2030;border:1px solid var(--accent);border-radius:4px;padding:8px 14px;z-index:20;text-align:center}
+.rank{width:100%;border-collapse:collapse;margin:10px 0}.rank td,.rank th{padding:5px 8px;border-bottom:1px solid #1b2030;text-align:left;font-weight:400}.rank th{color:var(--dim);font-size:11px;text-transform:uppercase}
+.rank tr.me td{color:var(--accent)}.rank tr.win td:first-child{color:#ffd36b}
+body.phone .partycard{order:5}
+body.phone #lobby .sheet{padding:14px}
+body.phone .lcols{grid-template-columns:1fr}
+body.phone input,body.phone select{font-size:16px}
+@media (max-width:560px){.lcols{grid-template-columns:1fr}input,select{font-size:16px}}
+</style>
+
+<section id="title"><div class="wrap">
+ <div><h1>Deepwell</h1></div>
+ <p class="lede">The well has no bottom. Every floor is new, every potion color, wand wood, ring gem and fountain is a secret kept until you test it, the order of the depths is shuffled for your save, and each monster hides a weakness. Nothing carries over except what you write in your journal. Descend as far as you can.</p>
+ <div class="row2"><button class="primary" id="cont" hidden>Continue</button><button id="jopen2">Journal</button><span class="dim" id="stat"></span></div>
+ <div><div class="top"><h3 style="margin:0">Choose a kit</h3><span class="dim">Echoes: <b id="echoes" style="color:var(--accent)">0</b></span></div></div>
+ <div id="kits"></div>
+ <div class="row2"><button class="primary" id="begin">Descend</button><button id="mpbtn">Multiplayer</button><button id="phonebtn">Phone layout</button><button id="reset" class="dim">Forget everything</button></div>
+ <p class="keys">Move: arrows, WASD, or tap a tile. Wait: space. Explore: x. Go to stairs: g. Descend: &gt;. Altar or fountain: e. Journal: i. Dying converts depth and kills into echoes, which unlock new kits.</p>
+</div></section>
+
+<section id="game" hidden><div class="wrap">
+ <div id="mapbox"><canvas id="map" width="100" height="100"></canvas></div>
+ <div id="phint" class="phint" hidden></div>
+ <div class="side">
+  <div class="card hudcard">
+   <div class="top"><span class="dim">Depth</span><span class="d" id="depth">1</span></div>
+   <div class="kv"><span>Health</span><span id="hptxt"></span></div><div class="bar"><div id="hpbar"></div></div>
+   <div class="kv"><span>Hunger</span><span id="satlab"></span></div><div class="bar"><div id="satbar"></div></div>
+   <div class="kv eqrow"><span>Weapon</span><span id="wpn"></span></div>
+   <div class="kv eqrow"><span>Armor</span><span id="arm"></span></div>
+   <div class="chips" id="status"></div><div class="chips" id="laws"></div>
+  </div>
+  <div class="card partycard" id="partycard" hidden>
+   <div class="top"><b id="partytitle">Party</b><span class="dim" id="partysub"></span></div>
+   <div id="partybanner" class="banner" hidden></div>
+   <div id="partylist"></div>
+   <div class="chatbox"><div class="chatlog" id="chatlog"></div>
+    <div class="chatrow"><input id="chatin" maxlength="140" placeholder="Message your party" autocomplete="off" enterkeyhint="send"><button id="chatsend">Send</button></div>
+    <div class="quick" id="quick"><button data-q="Help!">Help!</button><button data-q="Wait for me">Wait</button><button data-q="Go on, I'm right behind you">Go on</button><button data-q="Danger ahead">Danger</button><button data-q="Good one!">Nice</button><button id="pingbtn">Ping a tile</button></div></div>
+  </div>
+  <div class="card" id="inspect"></div>
+  <div class="card packcard">
+   <div class="tabs"><button id="packclose" class="pclose">Close</button><button data-tab="pack" class="on">Pack <span id="packcount" class="dim"></span></button><button data-tab="perks">Gifts</button><span class="sp"></span><button id="jopen">Journal</button><button id="menu">Menu</button></div>
+   <div id="hint" hidden></div>
+   <div id="packlist"></div>
+  </div>
+  <div class="card padcard" id="pad"><div class="dpad"><button data-dx="-1" data-dy="-1">↖</button><button data-dx="0" data-dy="-1">↑</button><button data-dx="1" data-dy="-1">↗</button><button data-dx="-1" data-dy="0">←</button><button data-pad="wait">Wait</button><button data-dx="1" data-dy="0">→</button><button data-dx="-1" data-dy="1">↙</button><button data-dx="0" data-dy="1">↓</button><button data-dx="1" data-dy="1">↘</button></div><div class="pacts"><button data-pad="explore">Explore</button><button data-pad="stairs">Stairs</button><button data-pad="down">Descend</button><button id="pint" data-pad="int" hidden>Interact</button><button data-pad="pack">Pack</button><button data-pad="journal">Journal</button><button data-pad="menu">Menu</button></div></div>
+  <div class="card ctrlcard"><div class="ctrl"><button id="bwait">Wait</button><button id="bexp">Explore</button><button id="bstairs">To stairs</button><button id="bdown">Descend</button><button id="bint" hidden>Interact</button></div></div>
+  <div class="card" id="log"></div>
+ </div>
+</div></section>
+
+<section id="draft" class="overlay" hidden><div class="sheet"><h2 id="drafttitle"></h2><div class="dim">Gifts stack. The same one chosen again grows stronger.</div><div id="draftopts"></div></div></section>
+<section id="dead" class="overlay" hidden><div class="sheet"><h2>You are lost to the well</h2><p id="deadmsg" style="font-family:var(--serif);font-size:20px"></p><p class="dim" id="deadstat"></p><button class="primary" id="again">Return to the surface</button></div></section>
+<section id="journal" class="overlay" hidden><div class="sheet"><div class="jhead"><h2>Journal</h2><button id="jclose">Close</button></div><div id="jbody"></div></div></section>
+
+<section id="lobby" class="overlay" hidden><div class="sheet">
+ <div class="jhead"><h2>Multiplayer</h2><button id="lclose">Back</button></div>
+ <div id="lstep1">
+  <p class="dim">Play with friends. One person hosts a room and shares its 5-letter code. In multiplayer every role is open, and nothing you find is kept except the echoes you earn.</p>
+  <div class="field"><label for="lname">Your name</label><input id="lname" maxlength="12" autocomplete="off"></div>
+  <div class="field"><label for="lkit">Role</label><select id="lkit"></select></div>
+  <div class="field"><label>Connection</label><div class="seg" id="lkind"><button data-v="peer" class="on">Online (room code)</button><button data-v="local">This device (other tab)</button></div></div>
+  <div class="lcols">
+   <div class="card"><h3>Host a room</h3>
+    <div class="seg" id="lmode"><button data-v="coop" class="on">Co-op</button><button data-v="race">Race</button></div>
+    <p id="lmodedesc" class="dim" style="margin:0"></p>
+    <div class="field" id="lgoalf" hidden><label for="lgoal">Race to depth</label><input id="lgoal" type="number" min="3" max="40" value="10"></div>
+    <button class="primary" id="lhost">Create room</button></div>
+   <div class="card"><h3>Join a room</h3>
+    <input id="lcode" maxlength="5" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    <button class="primary" id="ljoin">Join</button></div>
+  </div>
+  <p id="lerr" class="err" hidden></p>
+  <p id="lnote" class="dim" style="font-size:11px"></p>
+ </div>
+ <div id="lstep2" hidden>
+  <div class="codebox"><span class="dim">Room code</span><b id="lroomcode"></b><button id="lcopy">Copy invite link</button></div>
+  <p class="dim" id="lroominfo" style="margin:4px 0 8px"></p>
+  <div id="lplayers"></div>
+  <div class="row2" style="margin-top:12px"><select id="lkit2"></select><button id="lready">Ready</button><button class="primary" id="lstart" hidden>Start</button><button id="lleave" class="dim">Leave room</button></div>
+  <p id="lwait" class="dim" style="margin:8px 0 0"></p>
+  <div class="chatbox"><div class="chatlog" id="lchat"></div><div class="chatrow"><input id="lchatin" maxlength="140" placeholder="Say hello" autocomplete="off" enterkeyhint="send"><button id="lchatsend">Send</button></div></div>
+ </div>
+</div></section>
+<section id="mpend" class="overlay" hidden><div class="sheet"><h2 id="mpendt">Race over</h2><p id="mpendr" class="dim"></p><table class="rank" id="mpendtab"></table><button class="primary" id="mpendbtn">Back to menu</button></div></section>
+<div id="toast" hidden></div>
+
+<script>
+/*JS*/
+</script>
