@@ -1,5 +1,5 @@
 // Offline support. The cache name changes on every build, so updates arrive on the next launch.
-const CACHE = 'deepwell-69ffb0d9d3';
+const CACHE = 'deepwell-2b2eae987b';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
